@@ -5,13 +5,21 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".MainActivity" >
+    tools:context=".ChatbotActivity">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_weight="10"
         android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/chatbotBackButton"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="4"
+            android:text="BACK"
+            android:textSize="18sp" />
 
         <ImageView
             android:id="@+id/imageView"
@@ -20,13 +28,6 @@
             android:layout_weight="1"
             app:srcCompat="@mipmap/cryptogevity_logo_title" />
 
-        <Button
-            android:id="@+id/loginButton"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="4"
-            android:text="Login"
-            android:textSize="18sp" />
     </LinearLayout>
 
     <LinearLayout
@@ -35,29 +36,33 @@
         android:layout_weight="1"
         android:orientation="vertical">
 
-        <Button
-            android:id="@+id/chatbotButton"
+        <ScrollView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:text="to Chatbot"
-            android:textSize="30sp" />
+            android:background="#FF5722">
+
+            <LinearLayout
+                android:id="@+id/scroll_container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical" />
+        </ScrollView>
+
+        <EditText
+            android:id="@+id/enter_chat"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="2.5"
+            android:gravity="top|left"
+            android:hint="Enter to Chat here" />
 
         <Button
-            android:id="@+id/campusResourceButton"
+            android:id="@+id/send"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:text="Campus Resource"
-            android:textSize="30sp" />
-
-        <Button
-            android:id="@+id/button4"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:text="Button"
-            android:textSize="30sp" />
+            android:layout_weight="3"
+            android:text="SEND" />
 
     </LinearLayout>
 
