@@ -13,20 +13,24 @@
         android:layout_weight="10"
         android:orientation="horizontal">
 
-        <ImageView
-            android:id="@+id/imageView"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            app:srcCompat="@mipmap/cryptogevity_logo_title" />
-
         <Button
             android:id="@+id/loginButton"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="4"
+            android:background="#E84A27"
             android:text="Login"
             android:textSize="18sp" />
+
+        <ImageView
+            android:id="@+id/imageView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:paddingLeft="5dp"
+            android:paddingRight="5dp"
+            app:srcCompat="@mipmap/cryptogevity_logo_title" />
+
     </LinearLayout>
 
     <LinearLayout
@@ -52,11 +56,11 @@
             android:textSize="30sp" />
 
         <Button
-            android:id="@+id/button4"
+            android:id="@+id/newsButton"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:text="Button"
+            android:text="NEWS"
             android:textSize="30sp" />
 
     </LinearLayout>

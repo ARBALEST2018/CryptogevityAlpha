@@ -27,6 +27,10 @@ public class MainActivity extends AppCompatActivity {
             Intent intent = new Intent(this, CampusResourceActivity.class);
             startActivity(intent);
         });
+        findViewById(R.id.newsButton).setOnClickListener(v -> {
+            Intent intent = new Intent(this, NewsActivity.class);
+            startActivity(intent);
+        });
     }
     private void loginWindow() {
         final View container = getLayoutInflater().inflate(R.layout.login_window_chunk, null, false);
