@@ -20,20 +20,30 @@ public class CampusResourceActivity extends AppCompatActivity {
         findViewById(R.id.cs498text).setVisibility(View.GONE);
         findViewById(R.id.badm375text).setVisibility(View.GONE);
         findViewById(R.id.ace499text).setVisibility(View.GONE);
+        findViewById(R.id.AlmaMater).setVisibility(View.VISIBLE);
         findViewById(R.id.cs498Button).setOnClickListener(v -> {
             findViewById(R.id.cs498text).setVisibility(View.VISIBLE);
             findViewById(R.id.badm375text).setVisibility(View.GONE);
             findViewById(R.id.ace499text).setVisibility(View.GONE);
+            findViewById(R.id.AlmaMater).setVisibility(View.GONE);
         });
         findViewById(R.id.badm375Button).setOnClickListener(v -> {
             findViewById(R.id.cs498text).setVisibility(View.GONE);
             findViewById(R.id.badm375text).setVisibility(View.VISIBLE);
             findViewById(R.id.ace499text).setVisibility(View.GONE);
+            findViewById(R.id.AlmaMater).setVisibility(View.GONE);
         });
         findViewById(R.id.ace499Button).setOnClickListener(v -> {
             findViewById(R.id.cs498text).setVisibility(View.GONE);
             findViewById(R.id.badm375text).setVisibility(View.GONE);
             findViewById(R.id.ace499text).setVisibility(View.VISIBLE);
+            findViewById(R.id.AlmaMater).setVisibility(View.GONE);
+        });
+        findViewById(R.id.Other).setOnClickListener(v -> {
+            findViewById(R.id.cs498text).setVisibility(View.GONE);
+            findViewById(R.id.badm375text).setVisibility(View.GONE);
+            findViewById(R.id.ace499text).setVisibility(View.GONE);
+            findViewById(R.id.AlmaMater).setVisibility(View.VISIBLE);
         });
     }
 }
