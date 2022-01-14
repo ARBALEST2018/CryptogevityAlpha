@@ -1,4 +1,4 @@
-package com.example.cryptogevityalpha;
+package com.example.cryptogevityalpha.ui.ChatbotFragment;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
@@ -19,6 +19,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.example.cryptogevityalpha.R;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -95,6 +96,17 @@ public class ChatbotActivity extends AppCompatActivity {
         Map<String, String> params = new HashMap<String, String>();
         params.put("text", input);
         JSONObject toSend = new JSONObject(params);
+
+//        final View myTextContainer = getLayoutInflater().inflate(R.layout.just_a_text_view, null, false);
+//        ((TextView)myTextContainer.findViewById(R.id.onlyTextView)).setText(toSend.toString());
+//        ((TextView)myTextContainer.findViewById(R.id.onlyTextView)).setPadding(20, 20, 20, 20);
+//        ((TextView)myTextContainer.findViewById(R.id.onlyTextView)).setBackgroundColor(Color.rgb(232, 74, 39));
+//
+//        ((LinearLayout) myTextContainer.findViewById(R.id.textViewContainer)).setGravity(Gravity.RIGHT);
+//        ((LinearLayout) myTextContainer.findViewById(R.id.textViewContainer)).setPadding(200, 20, 20, 20);
+//        ((LinearLayout)findViewById(R.id.chat_scroll_container)).addView(myTextContainer);
+//        ((EditText)findViewById(R.id.enter_chat)).setText("");
+
         JsonObjectRequest objectRequest = new JsonObjectRequest(
                 Request.Method.POST,
                 url,
@@ -105,6 +117,7 @@ public class ChatbotActivity extends AppCompatActivity {
                         try {
                             System.out.println("Web Api called");
                             toSet.setText(response.getString("text"));
+                            //toSet.setText(response.toString());
                         } catch (JSONException e) {
                             e.printStackTrace();
                             toSet.setText("Sorry, I lost connection now, please try again later.");
@@ -130,7 +143,9 @@ public class ChatbotActivity extends AppCompatActivity {
                             }
                             toSet.setText(temp.getString("text"));
                         } catch (JSONException e) {
-                            e.printStackTrace();
+                            toSet.setText("Sorry, can you repeat that again?");
+                        } catch (ArrayIndexOutOfBoundsException e) {
+                            toSet.setText("Sorry, can you repeat that again?");
                         }
                         //((ScrollView)findViewById(R.id.chat_scroll)).fullScroll(ScrollView.FOCUS_DOWN);
                         findViewById(R.id.chat_scroll).post(new Runnable() {

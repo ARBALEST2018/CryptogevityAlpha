@@ -10,6 +10,10 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.example.cryptogevityalpha.ui.CampusResourceFragment.CampusResourceActivity;
+import com.example.cryptogevityalpha.ui.ChatbotFragment.ChatbotActivity;
+import com.example.cryptogevityalpha.ui.NewsFragment.NewsActivity;
+
 public class MainActivity extends AppCompatActivity {
 
     @Override
@@ -23,10 +27,10 @@ public class MainActivity extends AppCompatActivity {
             Intent intent = new Intent(this, ChatbotActivity.class);
             startActivity(intent);
         });
-        findViewById(R.id.campusResourceButton).setOnClickListener(v -> {
-            Intent intent = new Intent(this, CampusResourceActivity.class);
-            startActivity(intent);
-        });
+//        findViewById(R.id.campusResourceButton).setOnClickListener(v -> {
+//            Intent intent = new Intent(this, CampusResourceActivity.class);
+//            startActivity(intent);
+//        });
         findViewById(R.id.newsButton).setOnClickListener(v -> {
             Intent intent = new Intent(this, NewsActivity.class);
             startActivity(intent);

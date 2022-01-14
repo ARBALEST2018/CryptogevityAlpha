@@ -1,10 +1,11 @@
-package com.example.cryptogevityalpha;
+package com.example.cryptogevityalpha.ui.CampusResourceFragment;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+
+import com.example.cryptogevityalpha.R;
 
 public class CampusResourceActivity extends AppCompatActivity {
 

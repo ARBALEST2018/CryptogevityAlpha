@@ -1,3 +1,12 @@
 <resources>
     <string name="app_name">Cryptogevity Alpha</string>
+    <string-array name="forum_sort_by">
+        <item>Latest</item>
+        <item>Most Likes</item>
+        <item>Most Comments</item>
+    </string-array>
+    <string-array name="news_sort_by">
+        <item>Latest</item>
+        <item>Most Relevant</item>
+    </string-array>
 </resources>
