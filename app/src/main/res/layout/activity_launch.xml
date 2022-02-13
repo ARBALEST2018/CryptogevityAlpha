@@ -17,8 +17,53 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"
+            android:background="#FFFFFF"
             android:orientation="vertical"
-            android:visibility="visible">
+            android:visibility="gone">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginRight="10dp"
+                android:background="#4472C4"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="1dp"
+                    android:background="#FFFFFF"
+                    android:gravity="center_vertical"
+                    android:paddingLeft="10dp"
+                    android:paddingRight="10dp"
+                    android:paddingBottom="2dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Forum"
+                        android:textColor="#4472C4"
+                        android:textSize="24sp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:gravity="center_vertical"
+                        android:text="Sorted By"
+                        android:textColor="#000000"
+                        android:textSize="14sp" />
+
+                    <Spinner
+                        android:id="@+id/ForumSortedBySpinner"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:scrollbarSize="4sp" />
+
+                </LinearLayout>
+            </LinearLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -27,7 +72,8 @@
                 android:orientation="horizontal"
                 android:paddingLeft="20dp"
                 android:paddingTop="10dp"
-                android:paddingRight="20dp">
+                android:paddingRight="20dp"
+                android:visibility="gone">
 
                 <TextView
                     android:id="@+id/textView16"
@@ -39,10 +85,9 @@
                     android:textSize="14sp" />
 
                 <Spinner
-                    android:id="@+id/ForumSortedBySpinner"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:scrollbarSize="30sp" />
+                    android:scrollbarSize="4sp" />
 
                 <TextView
                     android:id="@+id/textView18"
@@ -69,7 +114,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_marginTop="10dp"
-                android:layout_weight="1">
+                android:layout_weight="1"
+                android:background="#FFFFFF">
 
                 <ScrollView
                     android:layout_width="match_parent"
@@ -92,9 +138,10 @@
                         android:id="@+id/NewForumPost1"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_marginRight="40dp"
+                        android:layout_marginBottom="100dp"
+                        android:background="@drawable/forum_new_post"
                         android:gravity="right"
-                        android:paddingRight="20dp"
-                        android:paddingBottom="20dp"
                         android:text="{fa-plus-circle}"
                         android:textColor="#4472C4"
                         android:textSize="80dp"
@@ -112,8 +159,7 @@
             android:layout_weight="1"
             android:background="#E5E5E5"
             android:orientation="vertical"
-            android:visibility="gone"
-            tools:context=".MainActivity">
+            android:visibility="gone">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -545,7 +591,7 @@
             android:layout_weight="1"
             android:background="#FFFFFF"
             android:orientation="vertical"
-            android:visibility="gone">
+            android:visibility="visible">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -586,13 +632,16 @@
                 </LinearLayout>
 
                 <LinearLayout
+                    android:id="@+id/NewsWhenSearch"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="10dp"
                     android:layout_marginTop="10dp"
                     android:layout_marginRight="10dp"
                     android:background="#4472C4"
-                    android:orientation="vertical">
+                    android:orientation="vertical"
+                    android:visibility="gone"
+                    tools:visibility="visible">
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -608,25 +657,109 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:text="News"
+                            android:text="History"
                             android:textColor="#4472C4"
                             android:textSize="24sp" />
 
-                        <TextView
-                            android:id="@+id/textView19"
+                        <com.joanzapata.iconify.widget.IconTextView
+                            android:id="@+id/delete_all_news_history"
                             android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="{fa-trash}"
+                            android:textColor="#4472C4"
+                            android:textSize="24sp" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="#FFFFFF"
+                        android:gravity="right"
+                        android:orientation="vertical">
+
+                        <HorizontalScrollView
+                            android:layout_width="match_parent"
                             android:layout_height="match_parent"
+                            android:layout_weight="3.5"
+                            android:background="#FFFFFF"
+                            android:fadingEdge="horizontal"
+                            android:scrollbars="horizontal">
+
+                            <LinearLayout
+                                android:id="@+id/news_search_history_container"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:paddingLeft="20dp"
+                                android:paddingTop="15dp"
+                                android:paddingRight="20dp" />
+                        </HorizontalScrollView>
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/NewsWhenNotSearch"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginTop="10dp"
+                        android:layout_marginRight="10dp"
+                        android:background="#4472C4"
+                        android:orientation="vertical">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="1dp"
+                            android:background="#FFFFFF"
                             android:gravity="center_vertical"
-                            android:text="Sorted By"
-                            android:textColor="#000000"
-                            android:textSize="14sp" />
+                            android:paddingLeft="10dp"
+                            android:paddingRight="10dp"
+                            android:paddingBottom="2dp">
 
-                        <Spinner
-                            android:id="@+id/NewsSortedBySpinner"
-                            android:layout_width="wrap_content"
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:text="News"
+                                android:textColor="#4472C4"
+                                android:textSize="24sp" />
+
+                            <TextView
+                                android:id="@+id/textView19"
+                                android:layout_width="wrap_content"
+                                android:layout_height="match_parent"
+                                android:gravity="center_vertical"
+                                android:text="Sorted By"
+                                android:textColor="#000000"
+                                android:textSize="14sp" />
+
+                            <Spinner
+                                android:id="@+id/NewsSortedBySpinner"
+                                android:layout_width="wrap_content"
+                                android:layout_height="match_parent"
+                                android:scrollbarSize="4sp" />
+
+                        </LinearLayout>
+
+                        <ScrollView
+                            android:layout_width="match_parent"
                             android:layout_height="match_parent"
-                            android:scrollbarSize="24dp" />
+                            android:layout_weight="1"
+                            android:background="#FFFFFF">
 
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:orientation="vertical" />
+                        </ScrollView>
                     </LinearLayout>
 
                     <ScrollView
@@ -636,24 +769,14 @@
                         android:background="#FFFFFF">
 
                         <LinearLayout
+                            android:id="@+id/news_scroll_container"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:orientation="vertical" />
                     </ScrollView>
+
                 </LinearLayout>
 
-                <ScrollView
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:background="#FFFFFF">
-
-                    <LinearLayout
-                        android:id="@+id/news_scroll_container"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical" />
-                </ScrollView>
             </LinearLayout>
 
             <Button
@@ -777,7 +900,7 @@
                     android:paddingTop="10dp"
                     android:paddingBottom="10dp"
                     android:singleLine="true"
-                    android:textSize="24sp" />
+                    android:textSize="18sp" />
 
                 <com.joanzapata.iconify.widget.IconTextView
                     android:id="@+id/CourseSearch"
@@ -788,13 +911,13 @@
                     android:gravity="center"
                     android:text="{fa-search}"
                     android:textColor="#FFFFFF"
-                    android:textSize="24sp" />
+                    android:textSize="18sp" />
             </LinearLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginTop="20dp"
+                android:layout_marginTop="10dp"
                 android:layout_weight="1"
                 android:background="#4472C4"
                 android:orientation="vertical">
@@ -844,7 +967,7 @@
                         android:scrollbars="horizontal">
 
                         <LinearLayout
-                            android:id="@+id/search_history_container"
+                            android:id="@+id/course_search_history_container"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:paddingLeft="20dp"
@@ -941,7 +1064,7 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:gravity="center"
-            android:text="{fa-male}"
+            android:text="{fa-user}"
             android:textColor="#FFFFFF"
             android:textSize="30sp" />
 

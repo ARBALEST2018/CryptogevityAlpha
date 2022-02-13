@@ -16,7 +16,6 @@ import android.graphics.PixelFormat;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.os.StrictMode;
 import android.view.Gravity;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
@@ -57,6 +56,7 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -74,8 +74,14 @@ public class LaunchActivity extends AppCompatActivity {
     private LinearLayout me;
     private LinearLayout forum;
     private ArrayList<String> courseSearchHistory;
+    private ArrayList<String> newsSearchHistory;
+    private ArrayList<ForumPost> forumPosts;
+    private ArrayList<NewsBrief> newsBriefs;
     private final String Split = "!#!#OscarChen#!#!";
     private final String courseFilename = "CryptogevityCourseSearchHistory";
+    private final String newsFilename = "CryptogevityNewsSearchHistory";
+
+    private int current; //1 for News, 2 for Course, 3 for Chatbot, 4 for Forum, 5 for Me
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -103,6 +109,9 @@ public class LaunchActivity extends AppCompatActivity {
 //        Amplify.configure(getApplicationContext());
 
         courseSearchHistory = new ArrayList<>();
+        newsSearchHistory = new ArrayList<>();
+        forumPosts = new ArrayList<>();
+        newsBriefs = new ArrayList<>();
         try {
             String[] saved = read(courseFilename).split(Split);
             for (String content:saved) {
@@ -113,7 +122,61 @@ public class LaunchActivity extends AppCompatActivity {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        updateSearchHistory();
+        try {
+            String[] saved = read(newsFilename).split(Split);
+            for (String content:saved) {
+                if (!content.equals("")) {
+                    newsSearchHistory.add(content);
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        Collections.reverse(courseSearchHistory);
+        Collections.reverse(newsSearchHistory);
+        updateCourseSearchHistory();
+        updateNewsSearchHistory();
+
+        forumPosts.add(new ForumPost("What is Ethereum", 3, 16, 10, "Ethereum, which launched in 2015, is the second-biggest", "Tim Schiesser", 20211207));
+        forumPosts.add(new ForumPost("Graphics Card Ethereum Hashrate", 4, 30, 25, "Bitcoin and Ethereum mining have been making headlines again, as prices and mining profitability were way up compared to the last couple of years. Everyone who didn't start mining last time is kicking themselves for their lack of foresight.", "Sami Haj-Assaad", 20211118));
+        forumPosts.add(new ForumPost("Nvidia 4000 Series Release Date", 5, 21, 13, "The RTX 4000 series GPUs are rumored to hit mass production in mid-2022. Assuming there's enough time to build up enough inventory, a retail launch around October or November 2022 is likely", "Tim Schiesser", 20211117));
+        forumPosts.add(new ForumPost("Coleco: Gone But Not Forgotten", 6, 12, 45, "#ThrowBackThursday For those growing up in the 1980s, the name \"Coleco\" stirs up nostalgic memories of a gaming era long past. The ColecoVision competed with the likes of Atari and Intellivision, leaving its mark in gaming history.", "William Gayde", 20211019));
+        forumPosts.add(new ForumPost("Cyrix 5x86 and Cyrix 6x86: Gone But Not Forgotten", 7, 50, 34, "Precursor chip maker Cyrix brought the world of personal computing to millions in the form of attainable budget PCs, only to be killed by its best product and its inability to run a popular game.", "Mike Jennings", 20210831));
+        forumPosts.add(new ForumPost("Nokia: The Story of the Once-Legendary Phone Maker", 8, 17, 28, "Most people who hear the word \"Nokia\" associate it with mobile phones, but there's a convoluted history to tell since the company's humble beginnings over 150 years ago and many reinventions.", "Tim Schiesser", 20210817));
+        forumPosts.add(new ForumPost("3dfx: Gone But Not Forgotten", 9, 45, 74, "", "Tim Schiesser", 20210730));
+        forumPosts.add(new ForumPost("S3 Graphics: Gone But Not Forgotten", 10, 12, 10, "These days it's rare to see a new hardware company break ground in the world of PCs, but 30 years ago, they were popping up all over the place. Join us as we pay tribute to S3 and see how its remarkable story unfolded over the years.", "TechSpot Staff", 20210728));
+        forumPosts.add(new ForumPost("Intellivision: Gone But Not Forgotten", 11, 24, 11, "Mattel developed a gaming system called Intellivision in the late 1970s, around the same time that the Atari 2600 launched. However, it made such an impression that the iconic console was never forgotten and is, in fact, making a comeback.", "TechSpot Staff", 20210712));
+        forumPosts.add(new ForumPost("Silicon Graphics: Gone But Not Forgotten", 12, 25, 45, "At its peak in the 1990s, Silicon Graphics had legendary status among 3D and graphic designers who leveraged the unique power of these workstations that were at cutting edge of visual computing.", "Tim Schiesser", 20210621));
+        forumPosts.add(new ForumPost("Compaq: Gone But Not Forgotten", 13, 25, 82, "Computers had finally made the jump from taking up an entire room to fitting on a desk, but they were still far from portable. In 1982, three entrepreneurs decided to change that. Their first entry into the market was the Compaq Portable in 1983.", "Tim Schiesser", 20210604));
+        forumPosts.add(new ForumPost("Sinclair Computers: Gone But Not Forgotten", 14, 21, 32, "For many, the 1980s was the golden era in home computing. Fighting among new companies was Sinclair who made cheap and basic computers, but helped give rise to the world of bedroom programming and game developers like Rare, Codemasters and Rockstar North.", "Mike Jennings", 20210528));
+        forumPosts.add(new ForumPost("The Commodore Story: Gone but Not Forgotten", 15, 37, 13, "A lot of people over 30 will probably name a Commodore as the first computer they ever used. Whether it was your first computer game or first program in BASIC, Commodore led an entire generation to a life-long career in the tech industry.", "Tim Schiesser", 20210526));
+        forumPosts.add(new ForumPost("Gateway 2000: Gone But Not Forgotten", 16, 20, 14, "What does a cattle ranch have in common with computers? Admittedly not much, but that didn't stop a couple of college dropouts from capitalizing on the concept to create a lucrative business that would reshape how consumers perceive and purchase personal computers.", "Tim Schiesser", 20210514));
+        forumPosts.add(new ForumPost("Palm: Gone But Not Forgotten", 17, 20, 52, "Palm, the inventor of the Palm Pilot, is one of the earliest and most successful personal digital assistants which made the name \"Palm\" synonymous with PDAs, a leading handheld computing form factor for nearly a decade and the precursor to the modern smartphone.", "Tim Schiesser", 20210513));
+        forumPosts.add(new ForumPost("OCZ Technology: Gone But Not Forgotten", 18, 47, 22, "OCZ Technology was founded in 2000 by Ryan Petersen as \"The Overclockerz Store,\" an online hardware reseller that catered to computer enthusiasts. The company started out selling binned processors and memory kits capable of running faster than their rated speeds - items which overclockers were willing to pay a premium for.", "Tim Schiesser", 20210503));
+        updateForumBrief();
+
+        newsBriefs.add(new NewsBrief(R.mipmap.news001, "Choi's $100K Bitcoin gift to fund blockchain education at Gies", getDrawable(R.mipmap.news001)));
+        newsBriefs.add(new NewsBrief(R.mipmap.news002, "Hecht charts new ways to engage learners with micro-credentials", getDrawable(R.mipmap.news002)));
+        newsBriefs.add(new NewsBrief(R.mipmap.news003, "New research explores implicit biases of creativity", getDrawable(R.mipmap.news003)));
+        newsBriefs.add(new NewsBrief(R.mipmap.news004, "Eight Chicago alumni honored by top business publication", getDrawable(R.mipmap.news004)));
+        newsBriefs.add(new NewsBrief(R.mipmap.news005, "Demand up for Master of Accounting and Master of Finance graduates", getDrawable(R.mipmap.news005)));
+        newsBriefs.add(new NewsBrief(R.mipmap.news006, "Elliott, Davis recognized for contributions to educational diversity", getDrawable(R.mipmap.news006)));
+        newsBriefs.add(new NewsBrief(R.mipmap.news007, "Activating a collectivistic orientation conducive to curbing COVID‐19", getDrawable(R.mipmap.news007)));
+        newsBriefs.add(new NewsBrief(R.mipmap.news008, "Jeffrey R. Brown named Dean of the Year by Poets&Quants", getDrawable(R.mipmap.news008)));
+        newsBriefs.add(new NewsBrief(R.mipmap.news009, "Retail credit exec discovers new opportunities with Gies iMBA", getDrawable(R.mipmap.news009)));
+        newsBriefs.add(new NewsBrief(R.mipmap.news010, "Why our MBA Program doesn’t require the GMAT", getDrawable(R.mipmap.news010)));
+        newsBriefs.add(new NewsBrief(R.mipmap.news011, "How can a Master’s in Technology Management help bridge the gap between STEM and business?", getDrawable(R.mipmap.news011)));
+        newsBriefs.add(new NewsBrief(R.mipmap.news012, "'Paradox brands' hold strong appeal for bicultural consumers", getDrawable(R.mipmap.news012)));
+        newsBriefs.add(new NewsBrief(R.mipmap.news013, "How can a Gies online MBA help you stand out in the workplace?", getDrawable(R.mipmap.news013)));
+        newsBriefs.add(new NewsBrief(R.mipmap.news014, "Choosing the graduate program that’s right for you", getDrawable(R.mipmap.news014)));
+        newsBriefs.add(new NewsBrief(R.mipmap.news015, "Two paths. One Destination. The Gies Accounting Master’s Degree Program", getDrawable(R.mipmap.news015)));
+        newsBriefs.add(new NewsBrief(R.mipmap.news016, "PODCAST: Gies marketing professor Tiffany White", getDrawable(R.mipmap.news016)));
+        newsBriefs.add(new NewsBrief(R.mipmap.news017, "Engaging donors in creative acts can boost charitable fundraising", getDrawable(R.mipmap.news017)));
+        newsBriefs.add(new NewsBrief(R.mipmap.news018, "Gies honors Matthew Kraatz with the Merle H. and Virginia Downs Boren Professorship", getDrawable(R.mipmap.news018)));
+        newsBriefs.add(new NewsBrief(R.mipmap.news019, "New DSRS director offers Gies researchers the moon and the stars", getDrawable(R.mipmap.news019)));
+        newsBriefs.add(new NewsBrief(R.mipmap.news020, "Celebrating 25 years of Illinois Business Consulting", getDrawable(R.mipmap.news020)));
+        updateNewsBrief();
+
 
         toChatbot = findViewById(R.id.ToChatbot);
         chatbotNav = findViewById(R.id.Chatbot_Nav);
@@ -132,10 +195,33 @@ public class LaunchActivity extends AppCompatActivity {
         news.setVisibility(View.GONE);
         me.setVisibility(View.GONE);
         forum.setVisibility(View.GONE);
+        current = 3;
         //toChatbot.setTextColor(0xFF4472C4);
         chatbotNav.setBackground(getDrawable(R.mipmap.bot_avatar_simple_selected_42));
 
 //        Iconify.
+
+        new KeyBoardShowListener(this).setKeyboardListener(
+                new KeyBoardShowListener.OnKeyboardVisibilityListener() {
+                    @Override
+                    public void onVisibilityChanged(boolean visible) {
+                        if (visible) {
+                            findViewById(R.id.bottom_button_container).setVisibility(View.GONE);
+                            //软键盘已弹出
+                            if (current == 1) {
+                                findViewById(R.id.NewsWhenNotSearch).setVisibility(View.GONE);
+                                findViewById(R.id.NewsWhenSearch).setVisibility(View.VISIBLE);
+                            }
+                        } else {
+                            //软键盘未弹出
+                            findViewById(R.id.bottom_button_container).setVisibility(View.VISIBLE);
+                            if (current == 1) {
+                                findViewById(R.id.NewsWhenSearch).setVisibility(View.GONE);
+                                findViewById(R.id.NewsWhenNotSearch).setVisibility(View.VISIBLE);
+                            }
+                        }
+                    }
+                }, this);
 
         toChatbot.setOnClickListener(v -> {
             chatbot.setVisibility(View.VISIBLE);
@@ -150,7 +236,7 @@ public class LaunchActivity extends AppCompatActivity {
             toNews.setTextColor(Color.WHITE);
             toMe.setTextColor(Color.WHITE);
             toForum.setTextColor(Color.WHITE);
-            hideKeyboard();
+            current = 3;
         });
         toCampusResource.setOnClickListener(v -> {
             chatbot.setVisibility(View.GONE);
@@ -165,7 +251,7 @@ public class LaunchActivity extends AppCompatActivity {
             toNews.setTextColor(Color.WHITE);
             toMe.setTextColor(Color.WHITE);
             toForum.setTextColor(Color.WHITE);
-            hideKeyboard();
+            current = 2;
         });
         toNews.setOnClickListener(v -> {
             chatbot.setVisibility(View.GONE);
@@ -180,7 +266,7 @@ public class LaunchActivity extends AppCompatActivity {
             toNews.setTextColor(0xFF4472C4);
             toMe.setTextColor(Color.WHITE);
             toForum.setTextColor(Color.WHITE);
-            hideKeyboard();
+            current = 1;
         });
         toMe.setOnClickListener(v -> {
             chatbot.setVisibility(View.GONE);
@@ -195,7 +281,7 @@ public class LaunchActivity extends AppCompatActivity {
             toNews.setTextColor(Color.WHITE);
             toMe.setTextColor(0xFF4472C4);
             toForum.setTextColor(Color.WHITE);
-            hideKeyboard();
+            current = 5;
         });
         toForum.setOnClickListener(v -> {
             chatbot.setVisibility(View.GONE);
@@ -210,7 +296,7 @@ public class LaunchActivity extends AppCompatActivity {
             toNews.setTextColor(Color.WHITE);
             toMe.setTextColor(Color.WHITE);
             toForum.setTextColor(0xFF4472C4);
-            hideKeyboard();
+            current = 4;
         });
 
 
@@ -221,20 +307,20 @@ public class LaunchActivity extends AppCompatActivity {
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         ((Spinner) findViewById(R.id.ForumSortedBySpinner)).setAdapter(adapter);
         //((Spinner) container.findViewById(R.id.length_unit)).setSelection(index);
-        for (int i = 0; i < 20; i++) {
-            final View forumtest = getLayoutInflater().inflate(R.layout.forum_post_brief, null, false);
-            ((TextView) forumtest.findViewById(R.id.Username)).setText("User No."+i);
-            ((TextView) forumtest.findViewById(R.id.ForumTime)).setText(""+i);
-            ((TextView) forumtest.findViewById(R.id.ForumPosiTitle)).setText("This Is Title For Post #"+i);
-            String temp = "This is test content for post by User #"+i+". ";
-            for (int j = 0; j < i; j++) {
-                temp = temp + "This is test content for post by User #"+i+". ";
-            }
-            ((TextView) forumtest.findViewById(R.id.ForumPostContent)).setText(temp);
-            ((TextView) forumtest.findViewById(R.id.ThumbNumber)).setText(i+1+"");
-            ((TextView) forumtest.findViewById(R.id.CommentNumber)).setText(i+2+"");
-            ((LinearLayout) findViewById(R.id.ForumBriefContainer)).addView(forumtest);
-        }
+//        for (int i = 0; i < 20; i++) {
+//            final View forumtest = getLayoutInflater().inflate(R.layout.forum_post_brief, null, false);
+//            ((TextView) forumtest.findViewById(R.id.Username)).setText("User No."+i);
+//            ((TextView) forumtest.findViewById(R.id.ForumTime)).setText(""+i);
+//            ((TextView) forumtest.findViewById(R.id.ForumPosiTitle)).setText("This Is Title For Post #"+i);
+//            String temp = "This is test content for post by User #"+i+". ";
+//            for (int j = 0; j < i; j++) {
+//                temp = temp + "This is test content for post by User #"+i+". ";
+//            }
+//            ((TextView) forumtest.findViewById(R.id.ForumPostContent)).setText(temp);
+//            ((TextView) forumtest.findViewById(R.id.ThumbNumber)).setText(i+1+"");
+//            ((TextView) forumtest.findViewById(R.id.CommentNumber)).setText(i+2+"");
+//            ((LinearLayout) findViewById(R.id.ForumBriefContainer)).addView(forumtest);
+//        }
 
 
 
@@ -261,17 +347,6 @@ public class LaunchActivity extends AppCompatActivity {
         });
 
         /** News Component */
-//        if (android.os.Build.VERSION.SDK_INT > 9) {
-//            StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
-//            StrictMode.setThreadPolicy(policy);
-//        }
-//        findViewById(R.id.renewButton).setOnClickListener(v -> {
-//            try {
-//                renew();
-//            } catch (Exception e) {
-//                e.printStackTrace();
-//            }
-//        });
         ArrayAdapter<CharSequence> adapter1 = ArrayAdapter.createFromResource(this, R.array.news_sort_by, android.R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         ((Spinner) findViewById(R.id.NewsSortedBySpinner)).setAdapter(adapter1);
@@ -279,15 +354,35 @@ public class LaunchActivity extends AppCompatActivity {
         RoundedBitmapDrawable roundedBitmapDrawable1 = RoundedBitmapDrawableFactory.create(getResources(), BitmapFactory.decodeResource(getResources(), R.mipmap.alma_mater_20211126));
         //roundedBitmapDrawable1 = RoundedBitmapDrawableFactory.create(getResources(), getDrawable(R.mipmap.alma_mater_20211126))
         roundedBitmapDrawable1.setCornerRadius(144);
-        for (int i = 0; i < 20; i++) {
-            final View newstest = getLayoutInflater().inflate(R.layout.news_brief, null, false);
-            //newstest.findViewById(R.id.NewsBriefContainer).setBackground(roundedBitmapDrawable1);
-            ((ImageView) newstest.findViewById(R.id.NewsBackground)).setImageDrawable(roundedBitmapDrawable1);
-//            newstest.findViewById(R.id.NewsBriefContainer).setBackground();
-//            newstest.findViewById(R.id.NewsBriefContainer).setBackground(getDrawable(R.mipmap.alma_mater_20211126));
-            ((TextView) newstest.findViewById(R.id.NewsTitle)).setText("This Is Title For News #"+i);
-            ((LinearLayout) findViewById(R.id.news_scroll_container)).addView(newstest);
-        }
+//        for (int i = 0; i < 20; i++) {
+//            final View newstest = getLayoutInflater().inflate(R.layout.news_brief, null, false);
+//            //newstest.findViewById(R.id.NewsBriefContainer).setBackground(roundedBitmapDrawable1);
+//            ((ImageView) newstest.findViewById(R.id.NewsBackground)).setImageDrawable(roundedBitmapDrawable1);
+////            newstest.findViewById(R.id.NewsBriefContainer).setBackground();
+////            newstest.findViewById(R.id.NewsBriefContainer).setBackground(getDrawable(R.mipmap.alma_mater_20211126));
+//            ((TextView) newstest.findViewById(R.id.NewsTitle)).setText("This Is Title For News #"+i);
+//            ((LinearLayout) findViewById(R.id.news_scroll_container)).addView(newstest);
+//        }
+        findViewById(R.id.NewsSearch).setOnClickListener(v -> {
+            newsSearch();
+        });
+        findViewById(R.id.delete_all_news_history).setOnClickListener(v -> {
+            if (newsSearchHistory.size() > 0) {
+                hideKeyboard();
+                final View container1 = getLayoutInflater().inflate(R.layout.just_a_text_view, null, false);
+                container1.setPadding(42, 42, 42, 12);
+                ((TextView) container1.findViewById(R.id.onlyTextView)).setText("Do you wish to delete ALL search history?");
+                AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                builder.setView(container1).setPositiveButton("Continue", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        newsSearchHistory = new ArrayList<>();
+                        updateNewsSearchHistory();
+                    }
+                });
+                builder.show();
+            }
+        });
 
 
         /** Me Component */
@@ -310,13 +405,123 @@ public class LaunchActivity extends AppCompatActivity {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         courseSearchHistory = new ArrayList<>();
-                        updateSearchHistory();
+                        updateCourseSearchHistory();
                     }
                 });
                 builder.show();
             }
         });
     }
+
+
+    /** Forum functions*/
+    private void updateForumBrief() {
+        for (ForumPost f:forumPosts) {
+            final View forumtest = getLayoutInflater().inflate(R.layout.forum_post_brief, null, false);
+            ((TextView) forumtest.findViewById(R.id.Username)).setText(f.getAuthor());
+            ((TextView) forumtest.findViewById(R.id.ForumTime)).setText(""+f.getTime());
+            ((TextView) forumtest.findViewById(R.id.ForumPosiTitle)).setText(f.getTitle());
+//            String temp = "This is test content for post by User #" + i + ". ";
+//            for (int j = 0; j < i; j++) {
+//                temp = temp + "This is test content for post by User #" + i + ". ";
+//            }
+            ((TextView) forumtest.findViewById(R.id.ForumPostContent)).setText(f.getIntro());
+            ((TextView) forumtest.findViewById(R.id.ThumbNumber)).setText(""+f.getLikes());
+            ((TextView) forumtest.findViewById(R.id.CommentNumber)).setText(""+f.getComments());
+            ((LinearLayout) findViewById(R.id.ForumBriefContainer)).addView(forumtest);
+        }
+    }
+
+
+
+
+
+
+    /** News functions */
+    private void updateNewsBrief() {
+        for (NewsBrief n: newsBriefs) {
+            //zoomDrawable(n.getPicture(), 1800, 1200);
+            RoundedBitmapDrawable roundedBitmapDrawable1 = RoundedBitmapDrawableFactory.create(getResources(), BitmapFactory.decodeResource(getResources(), n.getDrawableId()));
+            roundedBitmapDrawable1 = RoundedBitmapDrawableFactory.create(getResources(), zoomToBitmap(n.getPicture(), 1800, 1200));
+            roundedBitmapDrawable1.setCornerRadius(144);
+            final View newstest = getLayoutInflater().inflate(R.layout.news_brief, null, false);
+            //newstest.findViewById(R.id.NewsBriefContainer).setBackground(roundedBitmapDrawable1);
+            ((ImageView) newstest.findViewById(R.id.NewsBackground)).setImageDrawable(roundedBitmapDrawable1);
+//            newstest.findViewById(R.id.NewsBriefContainer).setBackground();
+//            newstest.findViewById(R.id.NewsBriefContainer).setBackground(getDrawable(R.mipmap.alma_mater_20211126));
+            ((TextView) newstest.findViewById(R.id.NewsTitle)).setText(n.getTitle());
+            ((LinearLayout) findViewById(R.id.news_scroll_container)).addView(newstest);
+        }
+    }
+    private void newsSearch() {
+        String entered = ((EditText)findViewById(R.id.NewsToSearch)).getText().toString().trim();
+        if (entered.length() == 0) {
+            final View nothingContainer = getLayoutInflater().inflate(R.layout.just_a_text_view, null, false);
+            AlertDialog.Builder nothingBuilder = new AlertDialog.Builder(this);
+            ((TextView)nothingContainer.findViewById(R.id.onlyTextView)).setText("Come on, at least type something!");
+            nothingBuilder.setView(nothingContainer);
+            nothingBuilder.show();
+        } else {
+            /** go to search result*/
+            if (entered.equals(Split)) {
+                return;
+            }
+            newsSearchHistory.remove(entered);
+            newsSearchHistory.add(entered);
+            updateNewsSearchHistory();
+        }
+    }
+    private void updateNewsSearchHistory() {
+        LinearLayout container = findViewById(R.id.news_search_history_container);
+        container.removeAllViews();
+        String toSave = "";
+        for (int i = newsSearchHistory.size() - 1; i >= 0; i--) {
+            final View nothingContainer = getLayoutInflater().inflate(R.layout.just_a_text_view, null, false);
+            ((TextView)nothingContainer.findViewById(R.id.onlyTextView)).setText(newsSearchHistory.get(i));
+            ((TextView)nothingContainer.findViewById(R.id.onlyTextView)).setBackground(getDrawable(R.drawable.search_history));
+            nothingContainer.setPadding(12, 12, 12, 24);
+            ((TextView)nothingContainer.findViewById(R.id.onlyTextView)).setOnClickListener(v -> {
+                newsSearchHistory.remove(((TextView)nothingContainer.findViewById(R.id.onlyTextView)).getText().toString());
+                newsSearchHistory.add(((TextView)nothingContainer.findViewById(R.id.onlyTextView)).getText().toString());
+                updateNewsSearchHistory();
+            });
+            ((TextView)nothingContainer.findViewById(R.id.onlyTextView)).setOnLongClickListener(l -> {
+                hideKeyboard();
+                final View container1 = getLayoutInflater().inflate(R.layout.just_a_text_view, null, false);
+                container1.setPadding(42, 42, 42, 12);
+                ((TextView) container1.findViewById(R.id.onlyTextView)).setText("Do you wish to delete this search history?");
+                AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                builder.setView(container1).setPositiveButton("Continue", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        newsSearchHistory.remove(((TextView)nothingContainer.findViewById(R.id.onlyTextView)).getText().toString());
+                        updateNewsSearchHistory();
+                    }
+                });
+                builder.show();
+                return true;
+            });
+            container.addView(nothingContainer);
+            toSave = toSave + newsSearchHistory.get(i) + Split ;
+        }
+        try {
+            save(newsFilename, toSave);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        if (newsSearchHistory.size() == 0) {
+            final View nothingContainer = getLayoutInflater().inflate(R.layout.just_a_text_view, null, false);
+            ((TextView)nothingContainer.findViewById(R.id.onlyTextView)).setText("OscarChen");
+            ((TextView)nothingContainer.findViewById(R.id.onlyTextView)).setBackground(getDrawable(R.drawable.search_history));
+            nothingContainer.setPadding(12, 12, 12, 24);
+            nothingContainer.setVisibility(View.INVISIBLE);
+            container.addView(nothingContainer);
+        }
+    }
+
+
+
+
 
 
     /** Campus Resource Function*/
@@ -328,23 +533,19 @@ public class LaunchActivity extends AppCompatActivity {
             ((TextView)nothingContainer.findViewById(R.id.onlyTextView)).setText("Come on, at least type something!");
             nothingBuilder.setView(nothingContainer);
             nothingBuilder.show();
-            ((EditText)findViewById(R.id.enter_chat)).setText("");
         } else {
             /** go to search result*/
-//            if (courseSearchHistory.contains(entered)) {
-//                courseSearchHistory.remove(entered);
-//            }
             if (entered.equals(Split)) {
                 return;
             }
             courseSearchHistory.remove(entered);
             courseSearchHistory.add(entered);
-            updateSearchHistory();
+            updateCourseSearchHistory();
         }
     }
 
-    private void updateSearchHistory() {
-        LinearLayout container = findViewById(R.id.search_history_container);
+    private void updateCourseSearchHistory() {
+        LinearLayout container = findViewById(R.id.course_search_history_container);
         container.removeAllViews();
         String toSave = "";
         for (int i = courseSearchHistory.size() - 1; i >= 0; i--) {
@@ -355,7 +556,7 @@ public class LaunchActivity extends AppCompatActivity {
             ((TextView)nothingContainer.findViewById(R.id.onlyTextView)).setOnClickListener(v -> {
                 courseSearchHistory.remove(((TextView)nothingContainer.findViewById(R.id.onlyTextView)).getText().toString());
                 courseSearchHistory.add(((TextView)nothingContainer.findViewById(R.id.onlyTextView)).getText().toString());
-                updateSearchHistory();
+                updateCourseSearchHistory();
             });
             ((TextView)nothingContainer.findViewById(R.id.onlyTextView)).setOnLongClickListener(l -> {
                 hideKeyboard();
@@ -367,19 +568,14 @@ public class LaunchActivity extends AppCompatActivity {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         courseSearchHistory.remove(((TextView)nothingContainer.findViewById(R.id.onlyTextView)).getText().toString());
-                        updateSearchHistory();
+                        updateCourseSearchHistory();
                     }
                 });
                 builder.show();
                 return true;
             });
             container.addView(nothingContainer);
-            toSave = toSave + courseSearchHistory.get(i);
-            toSave = toSave + Split;
-//            if (i != 0) {
-//                toSave = toSave + Split;
-//            }
-
+            toSave = toSave + courseSearchHistory.get(i) + Split;
         }
         try {
             save(courseFilename, toSave);
@@ -392,7 +588,7 @@ public class LaunchActivity extends AppCompatActivity {
             ((TextView)nothingContainer.findViewById(R.id.onlyTextView)).setBackground(getDrawable(R.drawable.search_history));
             nothingContainer.setPadding(12, 12, 12, 24);
             nothingContainer.setVisibility(View.INVISIBLE);
-            ((LinearLayout) findViewById(R.id.search_history_container)).addView(nothingContainer);
+            container.addView(nothingContainer);
         }
     }
 
@@ -505,35 +701,6 @@ public class LaunchActivity extends AppCompatActivity {
 
 
 
-
-
-    /** News functions */
-    private void renew() throws Exception {
-        URL url = new URL("https://giesbusiness.illinois.edu/news");
-        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-        conn.setRequestMethod("GET");
-        conn.setConnectTimeout(5*1000);
-        InputStream inStream= conn.getInputStream();
-        byte[] data = readInputStream(inStream);
-        String html = new String(data, "UTF-8");
-        final View myTextContainer = getLayoutInflater().inflate(R.layout.just_a_text_view, null, false);
-        ((TextView)myTextContainer.findViewById(R.id.onlyTextView)).setText(html);
-        ((LinearLayout)findViewById(R.id.news_scroll_container)).addView(myTextContainer);
-        System.out.println(html);
-    }
-    public static byte[] readInputStream(InputStream inStream) throws Exception{
-        ByteArrayOutputStream outStream = new ByteArrayOutputStream();
-        byte[] buffer = new byte[1024];
-        int len = 0;
-        while( (len=inStream.read(buffer)) != -1 ){
-            outStream.write(buffer, 0, len);
-        }
-        inStream.close();
-        return outStream.toByteArray();
-    }
-
-
-
     /** Me functions */
     private void loginWindow() {
         final View container = getLayoutInflater().inflate(R.layout.login_window_chunk, null, false);
@@ -620,6 +787,17 @@ public class LaunchActivity extends AppCompatActivity {
         drawable.setBounds(0, 0, width, height);
         drawable.draw(canvas);
         return bitmap;
+    }
+    private Bitmap zoomToBitmap(Drawable drawable, int w, int h) {
+        int width = drawable.getIntrinsicWidth();
+        int height = drawable.getIntrinsicHeight();
+        Bitmap oldbmp = drawableToBitmap(drawable);
+        Matrix matrix = new Matrix();
+        float scaleWidth = ((float) w / width);
+        float scaleHeight = ((float) h / height);
+        matrix.postScale(scaleWidth, scaleHeight);
+        return Bitmap.createBitmap(oldbmp, 0, 0, width, height,
+                matrix, true);
     }
     public void save(String filename, String filecontent) throws Exception {
         FileOutputStream output = this.openFileOutput(filename, Context.MODE_PRIVATE);
