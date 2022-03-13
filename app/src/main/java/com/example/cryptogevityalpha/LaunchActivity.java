@@ -17,6 +17,7 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
@@ -31,6 +32,7 @@ import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.joanzapata.iconify.Iconify;
@@ -45,23 +47,23 @@ import com.joanzapata.iconify.fonts.TypiconsModule;
 import com.joanzapata.iconify.fonts.WeathericonsModule;
 import com.joanzapata.iconify.widget.IconTextView;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.w3c.dom.Text;
 
-import java.io.ByteArrayOutputStream;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class LaunchActivity extends AppCompatActivity {
 
+    RequestQueue requestQueue;
     private LinearLayout toChatbot;
     private ImageView chatbotNav;
     private IconTextView toCampusResource;
@@ -77,6 +79,8 @@ public class LaunchActivity extends AppCompatActivity {
     private ArrayList<String> newsSearchHistory;
     private ArrayList<ForumPost> forumPosts;
     private ArrayList<NewsBrief> newsBriefs;
+    private LinearLayout homepage;
+    private LinearLayout alternative;
     private final String Split = "!#!#OscarChen#!#!";
     private final String courseFilename = "CryptogevityCourseSearchHistory";
     private final String newsFilename = "CryptogevityNewsSearchHistory";
@@ -97,7 +101,7 @@ public class LaunchActivity extends AppCompatActivity {
                 .with(new SimpleLineIconsModule())
                 .with(new IoniconsModule());
         setContentView(R.layout.activity_launch);
-
+        requestQueue = Volley.newRequestQueue(this);
 
 //        try {
 //            Amplify.configure(getApplicationContext());
@@ -137,22 +141,22 @@ public class LaunchActivity extends AppCompatActivity {
         updateCourseSearchHistory();
         updateNewsSearchHistory();
 
-        forumPosts.add(new ForumPost("What is Ethereum", 3, 16, 10, "Ethereum, which launched in 2015, is the second-biggest", "Tim Schiesser", 20211207));
-        forumPosts.add(new ForumPost("Graphics Card Ethereum Hashrate", 4, 30, 25, "Bitcoin and Ethereum mining have been making headlines again, as prices and mining profitability were way up compared to the last couple of years. Everyone who didn't start mining last time is kicking themselves for their lack of foresight.", "Sami Haj-Assaad", 20211118));
-        forumPosts.add(new ForumPost("Nvidia 4000 Series Release Date", 5, 21, 13, "The RTX 4000 series GPUs are rumored to hit mass production in mid-2022. Assuming there's enough time to build up enough inventory, a retail launch around October or November 2022 is likely", "Tim Schiesser", 20211117));
-        forumPosts.add(new ForumPost("Coleco: Gone But Not Forgotten", 6, 12, 45, "#ThrowBackThursday For those growing up in the 1980s, the name \"Coleco\" stirs up nostalgic memories of a gaming era long past. The ColecoVision competed with the likes of Atari and Intellivision, leaving its mark in gaming history.", "William Gayde", 20211019));
-        forumPosts.add(new ForumPost("Cyrix 5x86 and Cyrix 6x86: Gone But Not Forgotten", 7, 50, 34, "Precursor chip maker Cyrix brought the world of personal computing to millions in the form of attainable budget PCs, only to be killed by its best product and its inability to run a popular game.", "Mike Jennings", 20210831));
-        forumPosts.add(new ForumPost("Nokia: The Story of the Once-Legendary Phone Maker", 8, 17, 28, "Most people who hear the word \"Nokia\" associate it with mobile phones, but there's a convoluted history to tell since the company's humble beginnings over 150 years ago and many reinventions.", "Tim Schiesser", 20210817));
-        forumPosts.add(new ForumPost("3dfx: Gone But Not Forgotten", 9, 45, 74, "", "Tim Schiesser", 20210730));
-        forumPosts.add(new ForumPost("S3 Graphics: Gone But Not Forgotten", 10, 12, 10, "These days it's rare to see a new hardware company break ground in the world of PCs, but 30 years ago, they were popping up all over the place. Join us as we pay tribute to S3 and see how its remarkable story unfolded over the years.", "TechSpot Staff", 20210728));
-        forumPosts.add(new ForumPost("Intellivision: Gone But Not Forgotten", 11, 24, 11, "Mattel developed a gaming system called Intellivision in the late 1970s, around the same time that the Atari 2600 launched. However, it made such an impression that the iconic console was never forgotten and is, in fact, making a comeback.", "TechSpot Staff", 20210712));
-        forumPosts.add(new ForumPost("Silicon Graphics: Gone But Not Forgotten", 12, 25, 45, "At its peak in the 1990s, Silicon Graphics had legendary status among 3D and graphic designers who leveraged the unique power of these workstations that were at cutting edge of visual computing.", "Tim Schiesser", 20210621));
-        forumPosts.add(new ForumPost("Compaq: Gone But Not Forgotten", 13, 25, 82, "Computers had finally made the jump from taking up an entire room to fitting on a desk, but they were still far from portable. In 1982, three entrepreneurs decided to change that. Their first entry into the market was the Compaq Portable in 1983.", "Tim Schiesser", 20210604));
-        forumPosts.add(new ForumPost("Sinclair Computers: Gone But Not Forgotten", 14, 21, 32, "For many, the 1980s was the golden era in home computing. Fighting among new companies was Sinclair who made cheap and basic computers, but helped give rise to the world of bedroom programming and game developers like Rare, Codemasters and Rockstar North.", "Mike Jennings", 20210528));
-        forumPosts.add(new ForumPost("The Commodore Story: Gone but Not Forgotten", 15, 37, 13, "A lot of people over 30 will probably name a Commodore as the first computer they ever used. Whether it was your first computer game or first program in BASIC, Commodore led an entire generation to a life-long career in the tech industry.", "Tim Schiesser", 20210526));
-        forumPosts.add(new ForumPost("Gateway 2000: Gone But Not Forgotten", 16, 20, 14, "What does a cattle ranch have in common with computers? Admittedly not much, but that didn't stop a couple of college dropouts from capitalizing on the concept to create a lucrative business that would reshape how consumers perceive and purchase personal computers.", "Tim Schiesser", 20210514));
-        forumPosts.add(new ForumPost("Palm: Gone But Not Forgotten", 17, 20, 52, "Palm, the inventor of the Palm Pilot, is one of the earliest and most successful personal digital assistants which made the name \"Palm\" synonymous with PDAs, a leading handheld computing form factor for nearly a decade and the precursor to the modern smartphone.", "Tim Schiesser", 20210513));
-        forumPosts.add(new ForumPost("OCZ Technology: Gone But Not Forgotten", 18, 47, 22, "OCZ Technology was founded in 2000 by Ryan Petersen as \"The Overclockerz Store,\" an online hardware reseller that catered to computer enthusiasts. The company started out selling binned processors and memory kits capable of running faster than their rated speeds - items which overclockers were willing to pay a premium for.", "Tim Schiesser", 20210503));
+//        forumPosts.add(new ForumPost("What is Ethereum", 3, 16, 10, "Ethereum, which launched in 2015, is the second-biggest", "Tim Schiesser", 20211207));
+//        forumPosts.add(new ForumPost("Graphics Card Ethereum Hashrate", 4, 30, 25, "Bitcoin and Ethereum mining have been making headlines again, as prices and mining profitability were way up compared to the last couple of years. Everyone who didn't start mining last time is kicking themselves for their lack of foresight.", "Sami Haj-Assaad", 20211118));
+//        forumPosts.add(new ForumPost("Nvidia 4000 Series Release Date", 5, 21, 13, "The RTX 4000 series GPUs are rumored to hit mass production in mid-2022. Assuming there's enough time to build up enough inventory, a retail launch around October or November 2022 is likely", "Tim Schiesser", 20211117));
+//        forumPosts.add(new ForumPost("Coleco: Gone But Not Forgotten", 6, 12, 45, "#ThrowBackThursday For those growing up in the 1980s, the name \"Coleco\" stirs up nostalgic memories of a gaming era long past. The ColecoVision competed with the likes of Atari and Intellivision, leaving its mark in gaming history.", "William Gayde", 20211019));
+//        forumPosts.add(new ForumPost("Cyrix 5x86 and Cyrix 6x86: Gone But Not Forgotten", 7, 50, 34, "Precursor chip maker Cyrix brought the world of personal computing to millions in the form of attainable budget PCs, only to be killed by its best product and its inability to run a popular game.", "Mike Jennings", 20210831));
+//        forumPosts.add(new ForumPost("Nokia: The Story of the Once-Legendary Phone Maker", 8, 17, 28, "Most people who hear the word \"Nokia\" associate it with mobile phones, but there's a convoluted history to tell since the company's humble beginnings over 150 years ago and many reinventions.", "Tim Schiesser", 20210817));
+//        forumPosts.add(new ForumPost("3dfx: Gone But Not Forgotten", 9, 45, 74, "", "Tim Schiesser", 20210730));
+//        forumPosts.add(new ForumPost("S3 Graphics: Gone But Not Forgotten", 10, 12, 10, "These days it's rare to see a new hardware company break ground in the world of PCs, but 30 years ago, they were popping up all over the place. Join us as we pay tribute to S3 and see how its remarkable story unfolded over the years.", "TechSpot Staff", 20210728));
+//        forumPosts.add(new ForumPost("Intellivision: Gone But Not Forgotten", 11, 24, 11, "Mattel developed a gaming system called Intellivision in the late 1970s, around the same time that the Atari 2600 launched. However, it made such an impression that the iconic console was never forgotten and is, in fact, making a comeback.", "TechSpot Staff", 20210712));
+//        forumPosts.add(new ForumPost("Silicon Graphics: Gone But Not Forgotten", 12, 25, 45, "At its peak in the 1990s, Silicon Graphics had legendary status among 3D and graphic designers who leveraged the unique power of these workstations that were at cutting edge of visual computing.", "Tim Schiesser", 20210621));
+//        forumPosts.add(new ForumPost("Compaq: Gone But Not Forgotten", 13, 25, 82, "Computers had finally made the jump from taking up an entire room to fitting on a desk, but they were still far from portable. In 1982, three entrepreneurs decided to change that. Their first entry into the market was the Compaq Portable in 1983.", "Tim Schiesser", 20210604));
+//        forumPosts.add(new ForumPost("Sinclair Computers: Gone But Not Forgotten", 14, 21, 32, "For many, the 1980s was the golden era in home computing. Fighting among new companies was Sinclair who made cheap and basic computers, but helped give rise to the world of bedroom programming and game developers like Rare, Codemasters and Rockstar North.", "Mike Jennings", 20210528));
+//        forumPosts.add(new ForumPost("The Commodore Story: Gone but Not Forgotten", 15, 37, 13, "A lot of people over 30 will probably name a Commodore as the first computer they ever used. Whether it was your first computer game or first program in BASIC, Commodore led an entire generation to a life-long career in the tech industry.", "Tim Schiesser", 20210526));
+//        forumPosts.add(new ForumPost("Gateway 2000: Gone But Not Forgotten", 16, 20, 14, "What does a cattle ranch have in common with computers? Admittedly not much, but that didn't stop a couple of college dropouts from capitalizing on the concept to create a lucrative business that would reshape how consumers perceive and purchase personal computers.", "Tim Schiesser", 20210514));
+//        forumPosts.add(new ForumPost("Palm: Gone But Not Forgotten", 17, 20, 52, "Palm, the inventor of the Palm Pilot, is one of the earliest and most successful personal digital assistants which made the name \"Palm\" synonymous with PDAs, a leading handheld computing form factor for nearly a decade and the precursor to the modern smartphone.", "Tim Schiesser", 20210513));
+//        forumPosts.add(new ForumPost("OCZ Technology: Gone But Not Forgotten", 18, 47, 22, "OCZ Technology was founded in 2000 by Ryan Petersen as \"The Overclockerz Store,\" an online hardware reseller that catered to computer enthusiasts. The company started out selling binned processors and memory kits capable of running faster than their rated speeds - items which overclockers were willing to pay a premium for.", "Tim Schiesser", 20210503));
         updateForumBrief();
 
         newsBriefs.add(new NewsBrief(R.mipmap.news001, "Choi's $100K Bitcoin gift to fund blockchain education at Gies", getDrawable(R.mipmap.news001)));
@@ -189,6 +193,8 @@ public class LaunchActivity extends AppCompatActivity {
         news = findViewById(R.id.NewsContainer);
         me = findViewById(R.id.MeContainer);
         forum = findViewById(R.id.ForumContainer);
+        homepage = findViewById(R.id.homepageContainer);
+        alternative = findViewById(R.id.alternativeContainer);
 
         chatbot.setVisibility(View.VISIBLE);
         campusResource.setVisibility(View.GONE);
@@ -196,6 +202,8 @@ public class LaunchActivity extends AppCompatActivity {
         me.setVisibility(View.GONE);
         forum.setVisibility(View.GONE);
         current = 3;
+        homepage.setVisibility(View.VISIBLE);
+        alternative.setVisibility(View.GONE);
         //toChatbot.setTextColor(0xFF4472C4);
         chatbotNav.setBackground(getDrawable(R.mipmap.bot_avatar_simple_selected_42));
 
@@ -306,21 +314,66 @@ public class LaunchActivity extends AppCompatActivity {
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.forum_sort_by, android.R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         ((Spinner) findViewById(R.id.ForumSortedBySpinner)).setAdapter(adapter);
-        //((Spinner) container.findViewById(R.id.length_unit)).setSelection(index);
-//        for (int i = 0; i < 20; i++) {
-//            final View forumtest = getLayoutInflater().inflate(R.layout.forum_post_brief, null, false);
-//            ((TextView) forumtest.findViewById(R.id.Username)).setText("User No."+i);
-//            ((TextView) forumtest.findViewById(R.id.ForumTime)).setText(""+i);
-//            ((TextView) forumtest.findViewById(R.id.ForumPosiTitle)).setText("This Is Title For Post #"+i);
-//            String temp = "This is test content for post by User #"+i+". ";
-//            for (int j = 0; j < i; j++) {
-//                temp = temp + "This is test content for post by User #"+i+". ";
-//            }
-//            ((TextView) forumtest.findViewById(R.id.ForumPostContent)).setText(temp);
-//            ((TextView) forumtest.findViewById(R.id.ThumbNumber)).setText(i+1+"");
-//            ((TextView) forumtest.findViewById(R.id.CommentNumber)).setText(i+2+"");
-//            ((LinearLayout) findViewById(R.id.ForumBriefContainer)).addView(forumtest);
-//        }
+        findViewById(R.id.NewForumPost1).setOnClickListener(v -> {
+            homepage.setVisibility(View.GONE);
+            alternative.removeAllViews();
+            final View newPost = getLayoutInflater().inflate(R.layout.forum_new_post_layout, null, false);
+            newPost.findViewById(R.id.backContainer).setOnClickListener(v1 -> {
+                updateForumBrief();
+                alternative.removeAllViews();
+                alternative.setVisibility(View.GONE);
+                homepage.setVisibility(View.VISIBLE);
+            });
+            newPost.findViewById(R.id.postButton).setOnClickListener(v2 -> {
+                String title = ((EditText)findViewById(R.id.enterTitle)).getText().toString().trim();
+                String content = ((EditText)findViewById(R.id.enterContent)).getText().toString().trim();
+                if (title.length() == 0 || content.length() == 0) {
+                    final View nothingContainer = getLayoutInflater().inflate(R.layout.just_a_text_view, null, false);
+                    AlertDialog.Builder nothingBuilder = new AlertDialog.Builder(this);
+                    ((TextView)nothingContainer.findViewById(R.id.onlyTextView)).setText("Come on, at least share something!");
+                    nothingBuilder.setView(nothingContainer);
+                    nothingBuilder.show();
+                    ((EditText)findViewById(R.id.enterTitle)).setText(title);
+                    ((EditText)findViewById(R.id.enterContent)).setText(content);
+                } else {
+                    JSONObject toPost = new JSONObject();
+                    try {
+                        toPost.put("user_id", "oscarchen2022");
+                        toPost.put("title", title);
+                        toPost.put("desc", content);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                    JsonObjectRequest objectRequest = new JsonObjectRequest(Request.Method.POST,
+                            "http://34.231.40.162:8000/api/posts",
+                            toPost,
+                            new Response.Listener<JSONObject>() {
+                                @Override
+                                public void onResponse(JSONObject response) {
+                                    alternative.removeAllViews();
+                                    alternative.setVisibility(View.GONE);
+                                    homepage.setVisibility(View.VISIBLE);
+                                    hideKeyboard();
+                                    updateForumBrief();
+                                }
+                            },
+                            new Response.ErrorListener() {
+                                @Override
+                                public void onErrorResponse(VolleyError error) {
+                                    alternative.removeAllViews();
+                                    alternative.setVisibility(View.GONE);
+                                    homepage.setVisibility(View.VISIBLE);
+                                }
+                            }
+                    );
+                    requestQueue.add(objectRequest);
+                }
+            });
+            alternative.addView(newPost);
+            alternative.setVisibility(View.VISIBLE);
+            ((EditText)findViewById(R.id.enterTitle)).setText("");
+            ((EditText)findViewById(R.id.enterContent)).setText("");
+        });
 
 
 
@@ -352,17 +405,7 @@ public class LaunchActivity extends AppCompatActivity {
         ((Spinner) findViewById(R.id.NewsSortedBySpinner)).setAdapter(adapter1);
 
         RoundedBitmapDrawable roundedBitmapDrawable1 = RoundedBitmapDrawableFactory.create(getResources(), BitmapFactory.decodeResource(getResources(), R.mipmap.alma_mater_20211126));
-        //roundedBitmapDrawable1 = RoundedBitmapDrawableFactory.create(getResources(), getDrawable(R.mipmap.alma_mater_20211126))
         roundedBitmapDrawable1.setCornerRadius(144);
-//        for (int i = 0; i < 20; i++) {
-//            final View newstest = getLayoutInflater().inflate(R.layout.news_brief, null, false);
-//            //newstest.findViewById(R.id.NewsBriefContainer).setBackground(roundedBitmapDrawable1);
-//            ((ImageView) newstest.findViewById(R.id.NewsBackground)).setImageDrawable(roundedBitmapDrawable1);
-////            newstest.findViewById(R.id.NewsBriefContainer).setBackground();
-////            newstest.findViewById(R.id.NewsBriefContainer).setBackground(getDrawable(R.mipmap.alma_mater_20211126));
-//            ((TextView) newstest.findViewById(R.id.NewsTitle)).setText("This Is Title For News #"+i);
-//            ((LinearLayout) findViewById(R.id.news_scroll_container)).addView(newstest);
-//        }
         findViewById(R.id.NewsSearch).setOnClickListener(v -> {
             newsSearch();
         });
@@ -388,6 +431,18 @@ public class LaunchActivity extends AppCompatActivity {
         /** Me Component */
         findViewById(R.id.loginButton).setOnClickListener(v-> {
             loginWindow();
+        });
+        findViewById(R.id.ToSetting).setOnClickListener(v -> {
+            homepage.setVisibility(View.GONE);
+            alternative.removeAllViews();
+            final View settings = getLayoutInflater().inflate(R.layout.settings, alternative, true);
+            settings.findViewById(R.id.settingBack).setOnClickListener(v1 -> {
+                alternative.removeAllViews();
+                alternative.setVisibility(View.GONE);
+                homepage.setVisibility(View.VISIBLE);
+            });
+            //alternative.addView(settings);
+            alternative.setVisibility(View.VISIBLE);
         });
 
         /** Campus Resource Component*/
@@ -416,19 +471,121 @@ public class LaunchActivity extends AppCompatActivity {
 
     /** Forum functions*/
     private void updateForumBrief() {
-        for (ForumPost f:forumPosts) {
-            final View forumtest = getLayoutInflater().inflate(R.layout.forum_post_brief, null, false);
-            ((TextView) forumtest.findViewById(R.id.Username)).setText(f.getAuthor());
-            ((TextView) forumtest.findViewById(R.id.ForumTime)).setText(""+f.getTime());
-            ((TextView) forumtest.findViewById(R.id.ForumPosiTitle)).setText(f.getTitle());
-//            String temp = "This is test content for post by User #" + i + ". ";
-//            for (int j = 0; j < i; j++) {
-//                temp = temp + "This is test content for post by User #" + i + ". ";
-//            }
-            ((TextView) forumtest.findViewById(R.id.ForumPostContent)).setText(f.getIntro());
-            ((TextView) forumtest.findViewById(R.id.ThumbNumber)).setText(""+f.getLikes());
-            ((TextView) forumtest.findViewById(R.id.CommentNumber)).setText(""+f.getComments());
-            ((LinearLayout) findViewById(R.id.ForumBriefContainer)).addView(forumtest);
+
+        String url = "http://34.231.40.162:8000/api/posts";
+        //RequestQueue requestQueue = Volley.newRequestQueue(this);
+        JsonArrayRequest arrayRequest = new JsonArrayRequest(
+                Request.Method.GET,
+                url,
+                null,
+                new Response.Listener<JSONArray>() {
+                    @Override
+                    public void onResponse(JSONArray response) {
+                        System.out.println("Web Api called");
+                        forumPosts.clear();
+                        for (int i = 0; i < response.length(); i++) {
+                            try {
+                                JSONObject temp = response.getJSONObject(i);
+                                List<Comment>comments = new ArrayList<>();
+                                JSONArray c = temp.getJSONArray("comments");
+                                for (int k = 0; k < c.length(); k++) {
+                                    JSONObject j = c.getJSONObject(k);
+                                    comments.add(new Comment(j.getInt("id"), j.getString("user_id"),
+                                            j.getString("desc"), j.getString("create_time")));
+                                }
+                                ForumPost toAdd = new ForumPost(temp.getInt("id"), temp.getString("user_id"),
+                                        temp.getString("title"), temp.getString("desc"),
+                                        temp.getString("create_time"), comments);
+                                forumPosts.add(toAdd);
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+
+                        }
+                        ((LinearLayout)findViewById(R.id.ForumBriefContainer)).removeAllViews();
+                        for (int i = forumPosts.size() - 1; i >= 0; i--) {
+                            ForumPost f = forumPosts.get(i);
+                            final View forumtest = getLayoutInflater().inflate(R.layout.forum_brief_post_layout, null, false);
+                            ((TextView) forumtest.findViewById(R.id.Username)).setText(f.getUserId());
+                            ((TextView) forumtest.findViewById(R.id.ForumTime)).setText(""+f.getCreateTime());
+                            ((TextView) forumtest.findViewById(R.id.ForumPosiTitle)).setText(f.getTitle());
+                            ((TextView) forumtest.findViewById(R.id.ForumPostContent)).setText(f.getDesc());
+                            ((TextView) forumtest.findViewById(R.id.ThumbNumber)).setText(""+0);
+                            ((TextView) forumtest.findViewById(R.id.CommentNumber)).setText(""+f.getComments().size());
+                            ((LinearLayout) findViewById(R.id.ForumBriefContainer)).addView(forumtest);
+                            forumtest.setOnClickListener(v -> {
+                                final View viewPost = getLayoutInflater().inflate(R.layout.forum_view_post_layout, alternative, true);
+                                ((TextView)viewPost.findViewById(R.id.postUser)).setText(f.getUserId());
+                                ((TextView)viewPost.findViewById(R.id.postContent)).setText(f.getDesc());
+                                ((TextView)viewPost.findViewById(R.id.postTitle)).setText(f.getTitle());
+                                ((TextView)viewPost.findViewById(R.id.postTime)).setText(f.getCreateTime());
+                                final LinearLayout commentsContainer = viewPost.findViewById(R.id.commentsContainer);
+                                updateComments(commentsContainer, f);
+                                viewPost.findViewById(R.id.backContainer).setOnClickListener(v1 -> {
+                                    alternative.removeAllViews();
+                                    alternative.setVisibility(View.GONE);
+                                    homepage.setVisibility(View.VISIBLE);
+                                });
+                                viewPost.findViewById(R.id.sendComment).setOnClickListener(v2 -> {
+                                    String typed = ((EditText) findViewById(R.id.enterComment)).getText().toString().trim();
+                                    if (typed.length() > 0) {
+                                        JSONObject toSend = new JSONObject();
+                                        try {
+                                            toSend.put("user_id", "oscarchen2022");
+                                            toSend.put("post_id", f.getId());
+                                            toSend.put("desc", typed);
+                                        } catch (JSONException e) {
+                                            e.printStackTrace();
+                                        }
+                                        requestQueue.add(new JsonObjectRequest(Request.Method.POST, "http://34.231.40.162:8000/api/comments", toSend, new Response.Listener<JSONObject>() {
+                                            @Override
+                                            public void onResponse(JSONObject response) {
+                                                f.removeAllComments();
+                                                try {
+                                                    response.getJSONArray("comments");
+                                                    JSONArray c = response.getJSONArray("comments");
+                                                    for (int k = 0; k < c.length(); k++) {
+                                                        JSONObject j = c.getJSONObject(k);
+                                                        f.addComment(new Comment(j.getInt("id"), j.getString("user_id"),
+                                                                j.getString("desc"), j.getString("create_time")));
+                                                    }
+                                                } catch (JSONException e) {
+                                                    e.printStackTrace();
+                                                }
+                                                updateComments(commentsContainer, f);
+                                            }
+                                        }, new Response.ErrorListener() {
+                                            @Override
+                                            public void onErrorResponse(VolleyError error) {
+
+                                            }
+                                        }));
+                                    }
+                                });
+                                homepage.setVisibility(View.GONE);
+                                alternative.setVisibility(View.VISIBLE);
+                            });
+                        }
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        System.out.println("Web Api called");
+                    }
+                });
+        requestQueue.add(arrayRequest);
+    }
+
+    public void updateComments(LinearLayout commentsContainer, ForumPost f) {
+        commentsContainer.removeAllViews();
+        System.out.println("comment length: "+f.getComments().size());
+        for (Comment c:f.getComments()) {
+            final View comment = getLayoutInflater().inflate(R.layout.forum_comment_layout, null);
+            ((TextView) comment.findViewById(R.id.commentUser)).setText(c.getUserId());
+            ((TextView) comment.findViewById(R.id.commentContent)).setText(c.getDesc());
+            ((TextView) comment.findViewById(R.id.commentTime)).setText(c.getCreateTime());
+            commentsContainer.addView(comment);
         }
     }
 
@@ -642,7 +799,7 @@ public class LaunchActivity extends AppCompatActivity {
     }
     private void respond(String input, TextView toSet) {
         String url = "http://34.231.40.162:8000/api/chatterbot/";
-        RequestQueue requestQueue = Volley.newRequestQueue(this);
+        //RequestQueue requestQueue = Volley.newRequestQueue(this);
         Map<String, String> params = new HashMap<String, String>();
         params.put("text", input);
         JSONObject toSend = new JSONObject(params);
