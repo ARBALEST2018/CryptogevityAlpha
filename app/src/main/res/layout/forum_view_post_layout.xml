@@ -22,7 +22,7 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginLeft="10dp"
+                android:layout_marginLeft="15dp"
                 android:layout_marginTop="3dp"
                 android:layout_marginRight="10dp"
                 android:layout_marginBottom="3dp"
@@ -53,7 +53,7 @@
                         android:layout_gravity="center_vertical"
                         android:foregroundGravity="center_vertical"
                         android:gravity="center_vertical"
-                        android:paddingLeft="3dp"
+                        android:paddingLeft="5dp"
                         android:text="Back"
                         android:textColor="#000000"
                         android:textSize="30sp" />
@@ -88,7 +88,8 @@
 
             <ScrollView
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="3dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -108,7 +109,8 @@
                         android:paddingBottom="10dp"
                         android:text="This is Title"
                         android:textColor="#000000"
-                        android:textSize="24sp" />
+                        android:textSize="34sp"
+                        android:textStyle="bold" />
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -120,8 +122,13 @@
                         <ImageView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_margin="10dp"
-                            android:background="@mipmap/png20220111234758_42" />
+                            android:layout_marginLeft="20dp"
+                            android:layout_marginTop="10dp"
+                            android:layout_marginRight="20dp"
+                            android:layout_marginBottom="10dp"
+                            android:background="@mipmap/png20220111234758_42"
+                            android:scaleX="1.2"
+                            android:scaleY="1.2" />
 
                         <LinearLayout
                             android:layout_width="match_parent"
@@ -133,20 +140,20 @@
                                 android:id="@+id/postUser"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:layout_weight="1"
                                 android:background="#FFFFFF"
-                                android:paddingLeft="10dp"
-                                android:paddingTop="10dp"
-                                android:text="This is user" />
+                                android:paddingTop="5dp"
+                                android:text="This is user"
+                                android:textColor="#000000"
+                                android:textSize="20sp" />
 
                             <TextView
                                 android:id="@+id/postTime"
-                                android:layout_width="wrap_content"
+                                android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:background="#FFFFFF"
-                                android:paddingLeft="10dp"
-                                android:paddingBottom="10dp"
+                                android:paddingTop="5dp"
                                 android:text="This is time" />
+
                         </LinearLayout>
 
                     </LinearLayout>
@@ -165,10 +172,23 @@
                         android:textColor="#000000"
                         android:textSize="20sp" />
 
+                    <TextView
+                        android:id="@+id/textView24"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:layout_marginBottom="2dp"
+                        android:layout_weight="1"
+                        android:background="#FFFFFF"
+                        android:paddingLeft="10dp"
+                        android:text="All Replies"
+                        android:textColor="#637FDF"
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
+
                     <ScrollView
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:layout_marginTop="10dp"
                         android:layout_weight="1"
                         android:background="#FFFFFF">
 

@@ -16,8 +16,8 @@ import android.graphics.PixelFormat;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Gravity;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
@@ -28,6 +28,10 @@ import android.widget.ScrollView;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import com.amplifyframework.AmplifyException;
+import com.amplifyframework.auth.cognito.AWSCognitoAuthPlugin;
+import com.amplifyframework.core.Amplify;
+import com.amplifyframework.core.AmplifyConfiguration;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -50,7 +54,6 @@ import com.joanzapata.iconify.widget.IconTextView;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.w3c.dom.Text;
 
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -63,7 +66,9 @@ import java.util.Map;
 
 public class LaunchActivity extends AppCompatActivity {
 
-    RequestQueue requestQueue;
+    private RequestQueue requestQueue;
+    private TextView GiesNews;
+    private TextView ActivityNews;
     private LinearLayout toChatbot;
     private ImageView chatbotNav;
     private IconTextView toCampusResource;
@@ -79,11 +84,18 @@ public class LaunchActivity extends AppCompatActivity {
     private ArrayList<String> newsSearchHistory;
     private ArrayList<ForumPost> forumPosts;
     private ArrayList<NewsBrief> newsBriefs;
+    private ArrayList<NewsBrief> activitynewsBriefs;
+    private ArrayList<TrendingCourse> trendingCourses;
     private LinearLayout homepage;
     private LinearLayout alternative;
+    private String username = "oscartest";
+    private String password = "";
+    private boolean login = false;
     private final String Split = "!#!#OscarChen#!#!";
+    private final String loginFilename = "CryptogevityLogin";
     private final String courseFilename = "CryptogevityCourseSearchHistory";
     private final String newsFilename = "CryptogevityNewsSearchHistory";
+
 
     private int current; //1 for News, 2 for Course, 3 for Chatbot, 4 for Forum, 5 for Me
 
@@ -116,6 +128,8 @@ public class LaunchActivity extends AppCompatActivity {
         newsSearchHistory = new ArrayList<>();
         forumPosts = new ArrayList<>();
         newsBriefs = new ArrayList<>();
+        activitynewsBriefs = new ArrayList<>();
+        trendingCourses = new ArrayList<>();
         try {
             String[] saved = read(courseFilename).split(Split);
             for (String content:saved) {
@@ -131,6 +145,24 @@ public class LaunchActivity extends AppCompatActivity {
             for (String content:saved) {
                 if (!content.equals("")) {
                     newsSearchHistory.add(content);
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        findViewById(R.id.UsernameSet).setVisibility(View.GONE);
+        findViewById(R.id.LoginSet).setVisibility(View.VISIBLE);
+        try {
+            String[] saved = read(loginFilename).split(Split);
+            if (saved.length >= 2) {
+                if (username.length() > 0 && password.length() > 0) {
+//                    login(saved[0], saved[1]);
+                    login = true;
+                    ((TextView)findViewById(R.id.MyUsername)).setText(username);
+                    findViewById(R.id.UsernameSet).setVisibility(View.VISIBLE);
+                    findViewById(R.id.LoginSet).setVisibility(View.GONE);
+
+//                    findViewById(R.id.MyUsername).setVisibility(View.VISIBLE);
                 }
             }
         } catch (IOException e) {
@@ -179,9 +211,23 @@ public class LaunchActivity extends AppCompatActivity {
         newsBriefs.add(new NewsBrief(R.mipmap.news018, "Gies honors Matthew Kraatz with the Merle H. and Virginia Downs Boren Professorship", getDrawable(R.mipmap.news018)));
         newsBriefs.add(new NewsBrief(R.mipmap.news019, "New DSRS director offers Gies researchers the moon and the stars", getDrawable(R.mipmap.news019)));
         newsBriefs.add(new NewsBrief(R.mipmap.news020, "Celebrating 25 years of Illinois Business Consulting", getDrawable(R.mipmap.news020)));
+
+        activitynewsBriefs.add(new NewsBrief(R.mipmap.activitynews_1_0, "", getDrawable(R.mipmap.activitynews_1_0)));
+        activitynewsBriefs.add(new NewsBrief(R.mipmap.activitynews_2_1, "", getDrawable(R.mipmap.activitynews_2_1)));
         updateNewsBrief();
 
 
+        trendingCourses.add(new TrendingCourse(R.mipmap.trendingcourse1, "Object-Oriented Data Structures in C++", getDrawable(R.mipmap.trendingcourse1), "Comprehensive CS"));
+        trendingCourses.add(new TrendingCourse(R.mipmap.trendingcourse2, "Data Mining", getDrawable(R.mipmap.trendingcourse2), "Comprehensive CS"));
+        trendingCourses.add(new TrendingCourse(R.mipmap.trendingcourse3, "Introduction to Computer Science I", getDrawable(R.mipmap.trendingcourse3), "Comprehensive CS"));
+        trendingCourses.add(new TrendingCourse(R.mipmap.trendingcourse4, "Introduction to Computer Science II", getDrawable(R.mipmap.trendingcourse4), "Comprehensive CS"));
+        trendingCourses.add(new TrendingCourse(R.mipmap.trendingcourse5, "Discrete Structures and Algorithms", getDrawable(R.mipmap.trendingcourse5), "Comprehensive CS"));
+        trendingCourses.add(new TrendingCourse(R.mipmap.trendingcourse6, "Introduction to Data Mining", getDrawable(R.mipmap.trendingcourse6), "Comprehensive CS"));
+        updateTrendingCourse();
+
+
+        GiesNews = findViewById(R.id.GiesNews);
+        ActivityNews = findViewById(R.id.ActivityNews);
         toChatbot = findViewById(R.id.ToChatbot);
         chatbotNav = findViewById(R.id.Chatbot_Nav);
         toCampusResource = findViewById(R.id.ToCampusResource);
@@ -196,18 +242,70 @@ public class LaunchActivity extends AppCompatActivity {
         homepage = findViewById(R.id.homepageContainer);
         alternative = findViewById(R.id.alternativeContainer);
 
-        chatbot.setVisibility(View.VISIBLE);
+        chatbot.setVisibility(View.GONE);
         campusResource.setVisibility(View.GONE);
-        news.setVisibility(View.GONE);
+        news.setVisibility(View.VISIBLE);
         me.setVisibility(View.GONE);
         forum.setVisibility(View.GONE);
+
+        chatbotNav.setBackground(getDrawable(R.mipmap.bot_avatar_simple_42));
+        toCampusResource.setTextColor(Color.WHITE);
+        toNews.setTextColor(0xFF4472C4);
+        toMe.setTextColor(Color.WHITE);
+        toForum.setTextColor(Color.WHITE);
+
         current = 3;
         homepage.setVisibility(View.VISIBLE);
         alternative.setVisibility(View.GONE);
         //toChatbot.setTextColor(0xFF4472C4);
-        chatbotNav.setBackground(getDrawable(R.mipmap.bot_avatar_simple_selected_42));
+        //chatbotNav.setBackground(getDrawable(R.mipmap.bot_avatar_simple_selected_42));
 
-//        Iconify.
+        findViewById(R.id.news_scroll_container).setVisibility(View.GONE);
+        findViewById(R.id.activitynews_scroll_container).setVisibility(View.VISIBLE);
+        ActivityNews.setTextColor(0xFF02358F);
+        GiesNews.setTextColor(0xFF4472C4);
+        AWSCognitoAuthPlugin toAdd = new AWSCognitoAuthPlugin();
+
+        String temp = "{\"CognitoUserPool\": {\n\"Default\": {\n\"PoolId\": \"us-east-1_IodB1PTOo\",\n\"AppClientId\": \"3huft27r3nsee0akin005k2b7\",\n\"Region\": \"us-east-1\"\n}\n}\n}";
+        JSONObject toConfigure = null;
+        try {
+            toConfigure = new JSONObject(temp);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+//        try {
+//            toConfigure.put("aws_cognito_region", "us-east-1");
+//            toConfigure.put("aws_user_pools_id", "us-east-1_IodB1PTOo");
+//            toConfigure.put("aws_user_pools_web_client_id", "3huft27r3nsee0akin005k2b7");
+//        } catch (JSONException e) {
+//            e.printStackTrace();
+//        }
+        try {
+            toAdd.configure(toConfigure, getApplicationContext());
+        } catch (AmplifyException e) {
+            e.printStackTrace();
+        }
+        try {
+            Amplify.addPlugin(toAdd);
+            Amplify.configure(AmplifyConfiguration.fromJson(toConfigure),getApplicationContext());
+        } catch (AmplifyException e) {
+            e.printStackTrace();
+        }
+//        try {
+//            Amplify.configure(getApplicationContext());
+//        } catch (AmplifyException e) {
+//            System.out.println("\n\n\n\n\n\n\n\n\n\n");
+//            e.printStackTrace();
+//        }
+//        try {
+//            Amplify.Auth.fetchAuthSession(
+//                    result -> Log.i("AmplifyQuickstart", result.toString()),
+//                    error -> Log.e("AmplifyQuickstart", error.toString())
+//            );
+//        } catch (AmplifyException e) {
+//            e.printStackTrace();
+//        }
+
 
         new KeyBoardShowListener(this).setKeyboardListener(
                 new KeyBoardShowListener.OnKeyboardVisibilityListener() {
@@ -292,6 +390,7 @@ public class LaunchActivity extends AppCompatActivity {
             current = 5;
         });
         toForum.setOnClickListener(v -> {
+            updateForumBrief();
             chatbot.setVisibility(View.GONE);
             campusResource.setVisibility(View.GONE);
             news.setVisibility(View.GONE);
@@ -315,64 +414,72 @@ public class LaunchActivity extends AppCompatActivity {
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         ((Spinner) findViewById(R.id.ForumSortedBySpinner)).setAdapter(adapter);
         findViewById(R.id.NewForumPost1).setOnClickListener(v -> {
-            homepage.setVisibility(View.GONE);
-            alternative.removeAllViews();
-            final View newPost = getLayoutInflater().inflate(R.layout.forum_new_post_layout, null, false);
-            newPost.findViewById(R.id.backContainer).setOnClickListener(v1 -> {
-                updateForumBrief();
+            if (true/*login*/) {
+                homepage.setVisibility(View.GONE);
                 alternative.removeAllViews();
-                alternative.setVisibility(View.GONE);
-                homepage.setVisibility(View.VISIBLE);
-            });
-            newPost.findViewById(R.id.postButton).setOnClickListener(v2 -> {
-                String title = ((EditText)findViewById(R.id.enterTitle)).getText().toString().trim();
-                String content = ((EditText)findViewById(R.id.enterContent)).getText().toString().trim();
-                if (title.length() == 0 || content.length() == 0) {
-                    final View nothingContainer = getLayoutInflater().inflate(R.layout.just_a_text_view, null, false);
-                    AlertDialog.Builder nothingBuilder = new AlertDialog.Builder(this);
-                    ((TextView)nothingContainer.findViewById(R.id.onlyTextView)).setText("Come on, at least share something!");
-                    nothingBuilder.setView(nothingContainer);
-                    nothingBuilder.show();
-                    ((EditText)findViewById(R.id.enterTitle)).setText(title);
-                    ((EditText)findViewById(R.id.enterContent)).setText(content);
-                } else {
-                    JSONObject toPost = new JSONObject();
-                    try {
-                        toPost.put("user_id", "oscarchen2022");
-                        toPost.put("title", title);
-                        toPost.put("desc", content);
-                    } catch (JSONException e) {
-                        e.printStackTrace();
+                final View newPost = getLayoutInflater().inflate(R.layout.forum_new_post_layout, null, false);
+                newPost.findViewById(R.id.backContainer).setOnClickListener(v1 -> {
+                    updateForumBrief();
+                    alternative.removeAllViews();
+                    alternative.setVisibility(View.GONE);
+                    homepage.setVisibility(View.VISIBLE);
+                });
+                newPost.findViewById(R.id.postButton).setOnClickListener(v2 -> {
+                    String title = ((EditText)findViewById(R.id.enterTitle)).getText().toString().trim();
+                    String content = ((EditText)findViewById(R.id.enterContent)).getText().toString().trim();
+                    if (title.length() == 0 || content.length() == 0) {
+                        final View nothingContainer = getLayoutInflater().inflate(R.layout.just_a_text_view, null, false);
+                        AlertDialog.Builder nothingBuilder = new AlertDialog.Builder(this);
+                        ((TextView)nothingContainer.findViewById(R.id.onlyTextView)).setText("Come on, at least share something!");
+                        nothingBuilder.setView(nothingContainer);
+                        nothingBuilder.show();
+                        ((EditText)findViewById(R.id.enterTitle)).setText(title);
+                        ((EditText)findViewById(R.id.enterContent)).setText(content);
+                    } else {
+                        JSONObject toPost = new JSONObject();
+                        try {
+                            toPost.put("user_id", username);
+                            toPost.put("title", title);
+                            toPost.put("desc", content);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                        JsonObjectRequest objectRequest = new JsonObjectRequest(Request.Method.POST,
+                                "https://be.cryptogevity.com/api/posts",
+                                toPost,
+                                new Response.Listener<JSONObject>() {
+                                    @Override
+                                    public void onResponse(JSONObject response) {
+                                        alternative.removeAllViews();
+                                        alternative.setVisibility(View.GONE);
+                                        homepage.setVisibility(View.VISIBLE);
+                                        hideKeyboard();
+                                        updateForumBrief();
+                                    }
+                                },
+                                new Response.ErrorListener() {
+                                    @Override
+                                    public void onErrorResponse(VolleyError error) {
+                                        alternative.removeAllViews();
+                                        alternative.setVisibility(View.GONE);
+                                        homepage.setVisibility(View.VISIBLE);
+                                    }
+                                }
+                        );
+                        requestQueue.add(objectRequest);
                     }
-                    JsonObjectRequest objectRequest = new JsonObjectRequest(Request.Method.POST,
-                            "http://34.231.40.162:8000/api/posts",
-                            toPost,
-                            new Response.Listener<JSONObject>() {
-                                @Override
-                                public void onResponse(JSONObject response) {
-                                    alternative.removeAllViews();
-                                    alternative.setVisibility(View.GONE);
-                                    homepage.setVisibility(View.VISIBLE);
-                                    hideKeyboard();
-                                    updateForumBrief();
-                                }
-                            },
-                            new Response.ErrorListener() {
-                                @Override
-                                public void onErrorResponse(VolleyError error) {
-                                    alternative.removeAllViews();
-                                    alternative.setVisibility(View.GONE);
-                                    homepage.setVisibility(View.VISIBLE);
-                                }
-                            }
-                    );
-                    requestQueue.add(objectRequest);
-                }
-            });
-            alternative.addView(newPost);
-            alternative.setVisibility(View.VISIBLE);
-            ((EditText)findViewById(R.id.enterTitle)).setText("");
-            ((EditText)findViewById(R.id.enterContent)).setText("");
+                });
+                alternative.addView(newPost);
+                alternative.setVisibility(View.VISIBLE);
+                ((EditText)findViewById(R.id.enterTitle)).setText("");
+                ((EditText)findViewById(R.id.enterContent)).setText("");
+            } else {
+                final View tempContainer = getLayoutInflater().inflate(R.layout.just_a_text_view, null, false);
+                AlertDialog.Builder tempBuilder = new AlertDialog.Builder(LaunchActivity.this);
+                ((TextView)tempContainer.findViewById(R.id.onlyTextView)).setText("You have to login before creating a post!");
+                tempBuilder.setView(tempContainer);
+                tempBuilder.show();
+            }
         });
 
 
@@ -384,10 +491,12 @@ public class LaunchActivity extends AppCompatActivity {
         final View botTextContainer = getLayoutInflater().inflate(R.layout.just_a_text_view, null, false);
         ((TextView)botTextContainer.findViewById(R.id.onlyTextView)).setText("Hello there, I am Cryptogevity Chatbot. Say something to me!");
         //((TextView)botTextContainer.findViewById(R.id.onlyTextView)).setBackgroundColor(Color.rgb(19, 41, 75));
-        ((TextView)botTextContainer.findViewById(R.id.onlyTextView)).setBackground(getDrawable(R.drawable.shape_bot_text_chat));
+        ((TextView)botTextContainer.findViewById(R.id.onlyTextView)).setBackground(getDrawable(R.drawable.incoming_speech_bubble));
+//        ((TextView)botTextContainer.findViewById(R.id.onlyTextView)).setBackground(getDrawable(R.drawable.incoming_speech_bubble));
         ((TextView)botTextContainer.findViewById(R.id.onlyTextView)).setTextColor(Color.WHITE);
         //((TextView)botTextContainer.findViewById(R.id.onlyTextView)).setPadding(20, 20, 20, 20);
         ((LinearLayout) botTextContainer.findViewById(R.id.textViewContainer)).setGravity(Gravity.LEFT);
+        (botTextContainer.findViewById(R.id.ChatTextPlaceHolderRight)).setVisibility(View.INVISIBLE);
         ((LinearLayout) botTextContainer.findViewById(R.id.textViewContainer)).setPadding(20, 20, 200, 20);
         ((ImageView)botTextContainer.findViewById(R.id.avatar_bot)).setVisibility(View.VISIBLE);
         ((ImageView)botTextContainer.findViewById(R.id.avatar_bot)).setPadding(0, 0, 24, 0);
@@ -426,6 +535,18 @@ public class LaunchActivity extends AppCompatActivity {
                 builder.show();
             }
         });
+        ActivityNews.setOnClickListener(v -> {
+            ActivityNews.setTextColor(0xFF02358F);
+            GiesNews.setTextColor(0xFF4472C4);
+            findViewById(R.id.news_scroll_container).setVisibility(View.GONE);
+            findViewById(R.id.activitynews_scroll_container).setVisibility(View.VISIBLE);
+        });
+        GiesNews.setOnClickListener(v -> {
+            ActivityNews.setTextColor(0xFF4472C4);
+            GiesNews.setTextColor(0xFF02358F);
+            findViewById(R.id.activitynews_scroll_container).setVisibility(View.GONE);
+            findViewById(R.id.news_scroll_container).setVisibility(View.VISIBLE);
+        });
 
 
         /** Me Component */
@@ -443,6 +564,17 @@ public class LaunchActivity extends AppCompatActivity {
             });
             //alternative.addView(settings);
             alternative.setVisibility(View.VISIBLE);
+        });
+        findViewById(R.id.UsernameSet).setOnClickListener(v -> {
+            logout();
+        });
+        findViewById(R.id.AvatarMe).setOnClickListener(v -> {
+            if (login) {
+//                ((TextView)findViewById(R.id.MyUsername)).setText(username);
+//                findViewById(R.id.UsernameSet).setVisibility(View.VISIBLE);
+//                findViewById(R.id.MyUsername).setVisibility(View.VISIBLE);
+                logout();
+            }
         });
 
         /** Campus Resource Component*/
@@ -466,13 +598,14 @@ public class LaunchActivity extends AppCompatActivity {
                 builder.show();
             }
         });
+
     }
 
 
     /** Forum functions*/
     private void updateForumBrief() {
 
-        String url = "http://34.231.40.162:8000/api/posts";
+        String url = "https://be.cryptogevity.com/api/posts";
         //RequestQueue requestQueue = Volley.newRequestQueue(this);
         JsonArrayRequest arrayRequest = new JsonArrayRequest(
                 Request.Method.GET,
@@ -525,41 +658,51 @@ public class LaunchActivity extends AppCompatActivity {
                                     alternative.removeAllViews();
                                     alternative.setVisibility(View.GONE);
                                     homepage.setVisibility(View.VISIBLE);
+                                    updateForumBrief();
                                 });
                                 viewPost.findViewById(R.id.sendComment).setOnClickListener(v2 -> {
-                                    String typed = ((EditText) findViewById(R.id.enterComment)).getText().toString().trim();
-                                    if (typed.length() > 0) {
-                                        JSONObject toSend = new JSONObject();
-                                        try {
-                                            toSend.put("user_id", "oscarchen2022");
-                                            toSend.put("post_id", f.getId());
-                                            toSend.put("desc", typed);
-                                        } catch (JSONException e) {
-                                            e.printStackTrace();
-                                        }
-                                        requestQueue.add(new JsonObjectRequest(Request.Method.POST, "http://34.231.40.162:8000/api/comments", toSend, new Response.Listener<JSONObject>() {
-                                            @Override
-                                            public void onResponse(JSONObject response) {
-                                                f.removeAllComments();
-                                                try {
-                                                    response.getJSONArray("comments");
-                                                    JSONArray c = response.getJSONArray("comments");
-                                                    for (int k = 0; k < c.length(); k++) {
-                                                        JSONObject j = c.getJSONObject(k);
-                                                        f.addComment(new Comment(j.getInt("id"), j.getString("user_id"),
-                                                                j.getString("desc"), j.getString("create_time")));
+                                    if (login) {
+                                        String typed = ((EditText) findViewById(R.id.enterComment)).getText().toString().trim();
+                                        if (typed.length() > 0) {
+                                            JSONObject toSend = new JSONObject();
+                                            try {
+                                                toSend.put("user_id", username);
+                                                toSend.put("post_id", f.getId());
+                                                toSend.put("desc", typed);
+                                            } catch (JSONException e) {
+                                                e.printStackTrace();
+                                            }
+                                            requestQueue.add(new JsonObjectRequest(Request.Method.POST, "https://be.cryptogevity.com/api/comments", toSend, new Response.Listener<JSONObject>() {
+                                                @Override
+                                                public void onResponse(JSONObject response) {
+                                                    f.removeAllComments();
+                                                    try {
+                                                        response.getJSONArray("comments");
+                                                        JSONArray c = response.getJSONArray("comments");
+                                                        for (int k = 0; k < c.length(); k++) {
+                                                            JSONObject j = c.getJSONObject(k);
+                                                            f.addComment(new Comment(j.getInt("id"), j.getString("user_id"),
+                                                                    j.getString("desc"), j.getString("create_time")));
+                                                        }
+                                                    } catch (JSONException e) {
+                                                        e.printStackTrace();
                                                     }
-                                                } catch (JSONException e) {
-                                                    e.printStackTrace();
+                                                    ((EditText) findViewById(R.id.enterComment)).setText("");
+                                                    updateComments(commentsContainer, f);
                                                 }
-                                                updateComments(commentsContainer, f);
-                                            }
-                                        }, new Response.ErrorListener() {
-                                            @Override
-                                            public void onErrorResponse(VolleyError error) {
+                                            }, new Response.ErrorListener() {
+                                                @Override
+                                                public void onErrorResponse(VolleyError error) {
 
-                                            }
-                                        }));
+                                                }
+                                            }));
+                                        }
+                                    }  else {
+                                        final View tempContainer = getLayoutInflater().inflate(R.layout.just_a_text_view, null, false);
+                                        AlertDialog.Builder tempBuilder = new AlertDialog.Builder(LaunchActivity.this);
+                                        ((TextView)tempContainer.findViewById(R.id.onlyTextView)).setText("You have to login before making a comment!");
+                                        tempBuilder.setView(tempContainer);
+                                        tempBuilder.show();
                                     }
                                 });
                                 homepage.setVisibility(View.GONE);
@@ -587,6 +730,7 @@ public class LaunchActivity extends AppCompatActivity {
             ((TextView) comment.findViewById(R.id.commentTime)).setText(c.getCreateTime());
             commentsContainer.addView(comment);
         }
+        updateForumBrief();
     }
 
 
@@ -596,6 +740,7 @@ public class LaunchActivity extends AppCompatActivity {
 
     /** News functions */
     private void updateNewsBrief() {
+        ((LinearLayout) findViewById(R.id.news_scroll_container)).removeAllViews();
         for (NewsBrief n: newsBriefs) {
             //zoomDrawable(n.getPicture(), 1800, 1200);
             RoundedBitmapDrawable roundedBitmapDrawable1 = RoundedBitmapDrawableFactory.create(getResources(), BitmapFactory.decodeResource(getResources(), n.getDrawableId()));
@@ -608,6 +753,21 @@ public class LaunchActivity extends AppCompatActivity {
 //            newstest.findViewById(R.id.NewsBriefContainer).setBackground(getDrawable(R.mipmap.alma_mater_20211126));
             ((TextView) newstest.findViewById(R.id.NewsTitle)).setText(n.getTitle());
             ((LinearLayout) findViewById(R.id.news_scroll_container)).addView(newstest);
+        }
+        ((LinearLayout) findViewById(R.id.activitynews_scroll_container)).removeAllViews();
+        for (NewsBrief n: activitynewsBriefs) {
+            //zoomDrawable(n.getPicture(), 1800, 1200);
+            RoundedBitmapDrawable roundedBitmapDrawable1 = RoundedBitmapDrawableFactory.create(getResources(), BitmapFactory.decodeResource(getResources(), n.getDrawableId()));
+            roundedBitmapDrawable1 = RoundedBitmapDrawableFactory.create(getResources(), zoomToBitmap(n.getPicture(), 1800, (int)(1800.0/((double)n.getPicture().getIntrinsicWidth())*((double)n.getPicture().getIntrinsicHeight()))));
+
+            roundedBitmapDrawable1.setCornerRadius(144);
+            final View newstest = getLayoutInflater().inflate(R.layout.news_brief, null, false);
+            //newstest.findViewById(R.id.NewsBriefContainer).setBackground(roundedBitmapDrawable1);
+            ((ImageView) newstest.findViewById(R.id.NewsBackground)).setImageDrawable(roundedBitmapDrawable1);
+//            newstest.findViewById(R.id.NewsBriefContainer).setBackground();
+//            newstest.findViewById(R.id.NewsBriefContainer).setBackground(getDrawable(R.mipmap.alma_mater_20211126));
+            ((TextView) newstest.findViewById(R.id.NewsTitle)).setText(n.getTitle());
+            ((LinearLayout) findViewById(R.id.activitynews_scroll_container)).addView(newstest);
         }
     }
     private void newsSearch() {
@@ -682,6 +842,31 @@ public class LaunchActivity extends AppCompatActivity {
 
 
     /** Campus Resource Function*/
+    private void updateTrendingCourse() {
+        ((LinearLayout) findViewById(R.id.TrendingContainer)).removeAllViews();
+        for (TrendingCourse tc: trendingCourses) {
+            final View coursetest = getLayoutInflater().inflate(R.layout.trending_course, null, false);
+            coursetest.findViewById(R.id.CourseImage).setBackground(tc.getPicture());
+            ((TextView)coursetest.findViewById(R.id.CourseTitle)).setText(tc.getTitle());
+            ((TextView)coursetest.findViewById(R.id.CourseCategory)).setText(tc.getCategory());
+            ((LinearLayout) findViewById(R.id.TrendingContainer)).addView(coursetest);
+            coursetest.findViewById(R.id.trendingCourseContainer).setOnClickListener(v -> {
+                alternative.removeAllViews();
+                final View courseDetail = getLayoutInflater().inflate(R.layout.course_detail, alternative, true);
+                courseDetail.findViewById(R.id.backContainerCourse).setOnClickListener(v1 -> {
+                    alternative.removeAllViews();
+                    alternative.setVisibility(View.GONE);
+                    homepage.setVisibility(View.VISIBLE);
+                });
+                ((TextView) courseDetail.findViewById(R.id.courseTitle1)).setText(tc.getTitle1());
+                ((TextView) courseDetail.findViewById(R.id.courseTitle2)).setText(tc.getTitle2());
+                ((TextView) courseDetail.findViewById(R.id.courseCategory)).setText(tc.getCategory());
+                //alternative.addView(courseDetail);
+                homepage.setVisibility(View.GONE);
+                alternative.setVisibility(View.VISIBLE);
+            });
+        }
+    }
     private void courseSearch() {
         String entered = ((EditText)findViewById(R.id.CourseToSearch)).getText().toString().trim();
         if (entered.length() == 0) {
@@ -767,24 +952,30 @@ public class LaunchActivity extends AppCompatActivity {
             ((TextView)myTextContainer.findViewById(R.id.onlyTextView)).setText(entered);
             //((TextView)myTextContainer.findViewById(R.id.onlyTextView)).setPadding(20, 20, 20, 20);
             //((TextView)myTextContainer.findViewById(R.id.onlyTextView)).setBackgroundColor(0xFF2E9DFB);
-            ((TextView)myTextContainer.findViewById(R.id.onlyTextView)).setBackground(getDrawable(R.drawable.shape_my_text_chat));
+//            ((TextView)myTextContainer.findViewById(R.id.onlyTextView)).setBackground(getDrawable(R.drawable.shape_my_text_chat));
+            ((TextView)myTextContainer.findViewById(R.id.onlyTextView)).setBackground(getDrawable(R.drawable.outgoing_speech_bubble));
             ((TextView)myTextContainer.findViewById(R.id.onlyTextView)).setTextColor(Color.WHITE);
 
             ((LinearLayout) myTextContainer.findViewById(R.id.textViewContainer)).setHorizontalGravity(Gravity.RIGHT);
+            (myTextContainer.findViewById(R.id.ChatTextPlaceHolderLeft)).setVisibility(View.INVISIBLE);
             ((LinearLayout) myTextContainer.findViewById(R.id.textViewContainer)).setPadding(200, 20, 20, 20);
             ((ImageView)myTextContainer.findViewById(R.id.avatar_self)).setVisibility(View.VISIBLE);
             ((ImageView)myTextContainer.findViewById(R.id.avatar_self)).setPadding(24, 0, 0, 0);
             ((LinearLayout)findViewById(R.id.chat_scroll_container)).addView(myTextContainer);
             ((EditText)findViewById(R.id.enter_chat)).setText("");
 
+            ChatbotQnA QA = new ChatbotQnA(entered);
+
             final View botTextContainer = getLayoutInflater().inflate(R.layout.just_a_text_view, null, false);
             ((TextView)botTextContainer.findViewById(R.id.onlyTextView)).setText("Just a minute, looking that up");
             //((TextView)botTextContainer.findViewById(R.id.onlyTextView)).setBackgroundColor(Color.rgb(19, 41, 75));
-            ((TextView)botTextContainer.findViewById(R.id.onlyTextView)).setBackground(getDrawable(R.drawable.shape_bot_text_chat));
+//            ((TextView)botTextContainer.findViewById(R.id.onlyTextView)).setBackground(getDrawable(R.drawable.shape_bot_text_chat));
+            ((TextView)botTextContainer.findViewById(R.id.onlyTextView)).setBackground(getDrawable(R.drawable.incoming_speech_bubble));
             ((TextView)botTextContainer.findViewById(R.id.onlyTextView)).setTextColor(Color.WHITE);
             //((TextView)botTextContainer.findViewById(R.id.onlyTextView)).setPadding(20, 20, 20, 20);
-            respond(entered, ((TextView)botTextContainer.findViewById(R.id.onlyTextView)));
+            respond(entered, botTextContainer, QA);
             ((LinearLayout) botTextContainer.findViewById(R.id.textViewContainer)).setGravity(Gravity.LEFT);
+            (botTextContainer.findViewById(R.id.ChatTextPlaceHolderRight)).setVisibility(View.INVISIBLE);
             ((LinearLayout) botTextContainer.findViewById(R.id.textViewContainer)).setPadding(20, 20, 200, 20);
             ((ImageView)botTextContainer.findViewById(R.id.avatar_bot)).setVisibility(View.VISIBLE);
             ((ImageView)botTextContainer.findViewById(R.id.avatar_bot)).setPadding(0, 0, 24, 0);
@@ -797,8 +988,9 @@ public class LaunchActivity extends AppCompatActivity {
             });
         }
     }
-    private void respond(String input, TextView toSet) {
-        String url = "http://34.231.40.162:8000/api/chatterbot/";
+    private void respond(String input, View toAdd, ChatbotQnA QA) {
+        TextView toSet = (TextView)toAdd.findViewById(R.id.onlyTextView);
+        String url = "https://be.cryptogevity.com/api/chatterbot/";
         //RequestQueue requestQueue = Volley.newRequestQueue(this);
         Map<String, String> params = new HashMap<String, String>();
         params.put("text", input);
@@ -812,8 +1004,18 @@ public class LaunchActivity extends AppCompatActivity {
                     public void onResponse(JSONObject response) {
                         try {
                             System.out.println("Web Api called");
+                            QA.setAnswer(response.getString("text"));
                             toSet.setText(response.getString("text"));
+                            toAdd.findViewById(R.id.ThumbsContainer).setVisibility(View.VISIBLE);
                             //toSet.setText(response.toString());
+                            toAdd.findViewById(R.id.ThumbUp).setOnClickListener(v -> {
+                                toAdd.findViewById(R.id.ThumbsContainer).setVisibility(View.INVISIBLE);
+                                rateChatbotQnA(QA, "1");
+                            });
+                            toAdd.findViewById(R.id.ThumbDown).setOnClickListener(v -> {
+                                toAdd.findViewById(R.id.ThumbsContainer).setVisibility(View.INVISIBLE);
+                                rateChatbotQnA(QA, "-1");
+                            });
                         } catch (JSONException e) {
                             e.printStackTrace();
                             toSet.setText("Sorry, I lost connection now, please try again later.");
@@ -854,6 +1056,38 @@ public class LaunchActivity extends AppCompatActivity {
         );
         requestQueue.add(objectRequest);
     }
+    private void rateChatbotQnA(ChatbotQnA QA, String score) {
+        JSONObject toPost = new JSONObject();
+        System.out.println("Q : "+QA.getQuestion()+"\nA : "+QA.getAnswer());
+        try {
+            toPost.put("text", QA.getAnswer());
+            toPost.put("in_response_to", QA.getQuestion());
+            toPost.put("score", score);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        System.out.println(toPost.toString());
+        JsonObjectRequest objectRequest = new JsonObjectRequest(
+                Request.Method.POST,
+                "https://be.cryptogevity.com/api/rateanswer",
+                toPost,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        System.out.println("RATE SENT & RECEIVED");
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        System.out.println("RATE NOT SENT");
+                        error.printStackTrace();
+                    }
+                }
+        );
+        System.out.println(objectRequest);
+        requestQueue.add(objectRequest);
+    }
 
 
 
@@ -867,36 +1101,92 @@ public class LaunchActivity extends AppCompatActivity {
         builder.setView(container).setPositiveButton("LOGIN", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                testTemp();
+                loginViewR(container.findViewById(R.id.enterUsername),container.findViewById(R.id.enterPassword));
             }
         });
         builder.show();
     }
-//    private void login(EditText username, EditText password) {
-//        CognitoUserPool userPool = new CognitoUserPool(getApplicationContext(), "us-east-1_IodB1PTOo", "3huft27r3nsee0akin005k2b7", null, "us-east-1");
-////        Amplify.Auth.signIn(username.getText().toString(),
-////                password.getText().toString(),
-////                result -> Log.i("AuthQuickstart", result.isSignInComplete() ? "Sign in succeeded" : "Sign in not complete"),
-////                error -> Log.e("AuthQuickstart", error.toString()));
-//    }
-    private void testTemp() {
+    private void loginViewR(EditText enterUsername, EditText enterPassword) {
+//        CognitoUserPool userPool = new CognitoUserPool(getApplicationContext(), "us-east-1_IodB1PTOo", "3huft27r3nsee0akin005k2b7", null);
+        final String tempUsername = enterUsername.getText().toString();
+        final String tempPassword = enterPassword.getText().toString();
+        login(tempUsername, tempPassword);
+    }
+    private void login(String tempUsername, String tempPassword) {
+        ((TextView)findViewById(R.id.MyUsername)).setText(tempUsername);
+        Amplify.Auth.signIn(tempUsername,
+                tempPassword,
+                result -> {
+                    if (result.isSignInComplete()) {
+                        username = tempUsername;
+                        password = tempPassword;
+                        login = true;
+                        try {
+                            save(loginFilename, username + Split + password);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                        findViewById(R.id.UsernameSet).setVisibility(View.VISIBLE);
+                        findViewById(R.id.LoginSet).setVisibility(View.GONE);
+
+//                        findViewById(R.id.MyUsername).setVisibility(View.VISIBLE);
+                        System.out.println(findViewById(R.id.UsernameSet).getVisibility() + " "
+                                + findViewById(R.id.MyUsername).getVisibility() + " "
+                                + ((TextView)findViewById(R.id.MyUsername)).getText());
+//                        upvalid();
+                    } else {
+//                        upinvalid();
+                    }
+                },
+                error -> {
+                    Log.e("AuthQuickstart", error.toString());
+//                    upinvalid();
+                });
+    }
+    private void logout() {
         final View tempContainer = getLayoutInflater().inflate(R.layout.just_a_text_view, null, false);
         AlertDialog.Builder tempBuilder = new AlertDialog.Builder(LaunchActivity.this);
-        ((TextView)tempContainer.findViewById(R.id.onlyTextView)).setText("This is where the system supposed to send the message to the database, and get a response about whether the username and password combo are valid. For testing purpose now, click VALID to simulate if it is, and INVALID otherwise.");
+        ((TextView)tempContainer.findViewById(R.id.onlyTextView)).setText("Are you sure to log out?");
         tempBuilder.setView(tempContainer);
-        tempBuilder.setPositiveButton("VALID", new DialogInterface.OnClickListener() {
+        tempBuilder.setPositiveButton("LOGOUT", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                upvalid();
+                username = "";
+                password = "";
+                login = false;
+                try {
+                    save(loginFilename, username + Split + password);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                findViewById(R.id.UsernameSet).setVisibility(View.GONE);
+                findViewById(R.id.LoginSet).setVisibility(View.VISIBLE);
             }
-        }).setNegativeButton("INVALID", new DialogInterface.OnClickListener() {
+        }).setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                upinvalid();
             }
         });
         tempBuilder.show();
     }
+//    private void testTemp() {
+//        final View tempContainer = getLayoutInflater().inflate(R.layout.just_a_text_view, null, false);
+//        AlertDialog.Builder tempBuilder = new AlertDialog.Builder(LaunchActivity.this);
+//        ((TextView)tempContainer.findViewById(R.id.onlyTextView)).setText("This is where the system supposed to send the message to the database, and get a response about whether the username and password combo are valid. For testing purpose now, click VALID to simulate if it is, and INVALID otherwise.");
+//        tempBuilder.setView(tempContainer);
+//        tempBuilder.setPositiveButton("VALID", new DialogInterface.OnClickListener() {
+//            @Override
+//            public void onClick(DialogInterface dialog, int which) {
+//                upvalid();
+//            }
+//        }).setNegativeButton("INVALID", new DialogInterface.OnClickListener() {
+//            @Override
+//            public void onClick(DialogInterface dialog, int which) {
+//                upinvalid();
+//            }
+//        });
+//        tempBuilder.show();
+//    }
     private void upvalid() {
         final View validContainer = getLayoutInflater().inflate(R.layout.just_a_text_view, null, false);
         AlertDialog.Builder validBuilder = new AlertDialog.Builder(LaunchActivity.this);
@@ -904,6 +1194,7 @@ public class LaunchActivity extends AppCompatActivity {
         ((TextView)validContainer.findViewById(R.id.onlyTextView)).setText("Welcome!");
         validBuilder.setView(validContainer);
         validBuilder.show();
+
     }
     private void upinvalid() {
         final View invalidContainer = getLayoutInflater().inflate(R.layout.just_a_text_view, null, false);

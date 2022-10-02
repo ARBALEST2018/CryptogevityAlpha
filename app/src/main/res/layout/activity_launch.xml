@@ -34,8 +34,40 @@
                 android:layout_weight="1"
                 android:background="#FFFFFF"
                 android:orientation="vertical"
-                android:visibility="gone"
-                tools:visibility="gone">
+                android:visibility="visible"
+                tools:visibility="visible">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:paddingLeft="10dp"
+                    android:paddingTop="10dp"
+                    android:paddingRight="10dp">
+
+                    <EditText
+                        android:id="@+id/ForumToSearch"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:background="@drawable/shape_enter_chat"
+                        android:hint="Type to Search"
+                        android:paddingTop="10dp"
+                        android:paddingBottom="10dp"
+                        android:singleLine="true"
+                        android:textSize="18sp" />
+
+                    <com.joanzapata.iconify.widget.IconTextView
+                        android:id="@+id/ForumSearch"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_weight="5"
+                        android:background="@drawable/shape_search"
+                        android:gravity="center"
+                        android:text="{fa-search}"
+                        android:textColor="#FFFFFF"
+                        android:textSize="18sp" />
+                </LinearLayout>
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -62,7 +94,8 @@
                             android:layout_weight="1"
                             android:text="Forum"
                             android:textColor="#4472C4"
-                            android:textSize="24sp" />
+                            android:textSize="28sp"
+                            android:textStyle="bold" />
 
                         <TextView
                             android:layout_width="wrap_content"
@@ -175,7 +208,8 @@
                 android:layout_weight="1"
                 android:background="#E5E5E5"
                 android:orientation="vertical"
-                android:visibility="visible">
+                android:visibility="visible"
+                tools:visibility="gone">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -193,26 +227,62 @@
                         android:background="@mipmap/png20220111234758_100"
                         android:padding="5dp" />
 
-                    <TextView
-                        android:id="@+id/loginButton"
+                    <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:layout_weight="1"
-                        android:background="#00FFFFFF"
                         android:gravity="center_vertical"
-                        android:paddingLeft="40dp"
-                        android:password="false"
-                        android:text="Login"
-                        android:textColor="#000000"
-                        android:textSize="42sp" />
+                        android:orientation="vertical">
 
-                    <com.joanzapata.iconify.widget.IconTextView
-                        android:id="@+id/textView14"
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:gravity="center"
-                        android:text="{fa-angle-right}"
-                        android:textSize="42sp" />
+                        <LinearLayout
+                            android:id="@+id/UsernameSet"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:gravity="center_vertical"
+                            android:orientation="horizontal"
+                            android:visibility="gone">
+
+                            <TextView
+                                android:id="@+id/MyUsername"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:paddingLeft="20dp"
+                                android:text="Your Username"
+                                android:textSize="30sp"
+                                android:visibility="visible" />
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:id="@+id/LoginSet"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:orientation="horizontal"
+                            android:visibility="visible">
+
+                            <TextView
+                                android:id="@+id/loginButton"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:layout_weight="1"
+                                android:background="#00FFFFFF"
+                                android:gravity="center_vertical"
+                                android:paddingLeft="40dp"
+                                android:password="false"
+                                android:text="Login"
+                                android:textColor="#000000"
+                                android:textSize="42sp" />
+
+                            <com.joanzapata.iconify.widget.IconTextView
+                                android:id="@+id/textView14"
+                                android:layout_width="wrap_content"
+                                android:layout_height="match_parent"
+                                android:gravity="center"
+                                android:text="{fa-angle-right}"
+                                android:textSize="42sp"
+                                android:visibility="visible" />
+
+                        </LinearLayout>
+                    </LinearLayout>
 
                 </LinearLayout>
 
@@ -231,7 +301,8 @@
                         android:layout_marginRight="25dp"
                         android:layout_weight="7"
                         android:background="@drawable/shape_6_me"
-                        android:orientation="vertical">
+                        android:orientation="vertical"
+                        android:translationZ="20dp">
 
                         <LinearLayout
                             android:layout_width="match_parent"
@@ -250,10 +321,49 @@
                                 <com.joanzapata.iconify.widget.IconTextView
                                     android:id="@+id/button2"
                                     android:layout_width="match_parent"
-                                    android:layout_height="match_parent"
-                                    android:gravity="center"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:gravity="bottom|center"
                                     android:text="{fa-clock-o}"
                                     android:textSize="42sp" />
+
+                                <TextView
+                                    android:id="@+id/textView27"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginBottom="10dp"
+                                    android:gravity="center"
+                                    android:text="History"
+                                    android:textAlignment="center"
+                                    android:textSize="16sp" />
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:id="@+id/button11"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:layout_weight="1"
+                                android:orientation="vertical">
+
+                                <com.joanzapata.iconify.widget.IconTextView
+                                    android:id="@+id/button18"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:gravity="bottom|center"
+                                    android:text="{fa-download}"
+                                    android:textSize="42sp" />
+
+                                <TextView
+                                    android:id="@+id/textView28"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginBottom="10dp"
+                                    android:gravity="center"
+                                    android:text="Download"
+                                    android:textAlignment="center"
+                                    android:textSize="16sp" />
+
                             </LinearLayout>
 
                             <LinearLayout
@@ -266,10 +376,22 @@
                                 <com.joanzapata.iconify.widget.IconTextView
                                     android:id="@+id/button3"
                                     android:layout_width="match_parent"
-                                    android:layout_height="match_parent"
-                                    android:gravity="center"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:gravity="bottom|center"
                                     android:text="{fa-bell}"
                                     android:textSize="42sp" />
+
+                                <TextView
+                                    android:id="@+id/textView39"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginBottom="10dp"
+                                    android:gravity="center"
+                                    android:text="Message"
+                                    android:textAlignment="center"
+                                    android:textSize="16sp" />
+
                             </LinearLayout>
 
                             <LinearLayout
@@ -282,10 +404,22 @@
                                 <com.joanzapata.iconify.widget.IconTextView
                                     android:id="@+id/button4"
                                     android:layout_width="match_parent"
-                                    android:layout_height="match_parent"
-                                    android:gravity="center"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:gravity="bottom|center"
                                     android:text="{fa-star}"
                                     android:textSize="42sp" />
+
+                                <TextView
+                                    android:id="@+id/textView40"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginBottom="10dp"
+                                    android:gravity="center"
+                                    android:text="Favorite"
+                                    android:textAlignment="center"
+                                    android:textSize="16sp" />
+
                             </LinearLayout>
                         </LinearLayout>
 
@@ -305,27 +439,35 @@
                                 <com.joanzapata.iconify.widget.IconTextView
                                     android:id="@+id/button6"
                                     android:layout_width="match_parent"
-                                    android:layout_height="match_parent"
-                                    android:gravity="center"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:gravity="bottom|center"
                                     android:text="{fa-clipboard}"
                                     android:textSize="42sp" />
+
+                                <TextView
+                                    android:id="@+id/textView41"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginBottom="10dp"
+                                    android:gravity="center"
+                                    android:text="Draft"
+                                    android:textAlignment="center"
+                                    android:textSize="16sp" />
+
                             </LinearLayout>
 
                             <LinearLayout
-                                android:id="@+id/button11"
                                 android:layout_width="match_parent"
                                 android:layout_height="match_parent"
                                 android:layout_weight="1"
-                                android:orientation="vertical">
+                                android:orientation="vertical" />
 
-                                <com.joanzapata.iconify.widget.IconTextView
-                                    android:id="@+id/button18"
-                                    android:layout_width="match_parent"
-                                    android:layout_height="match_parent"
-                                    android:gravity="center"
-                                    android:text="{fa-download}"
-                                    android:textSize="42sp" />
-                            </LinearLayout>
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:layout_weight="1"
+                                android:orientation="vertical" />
 
                             <LinearLayout
                                 android:id="@+id/button12"
@@ -594,6 +736,55 @@
                             </LinearLayout>
                         </LinearLayout>
 
+                        <LinearLayout
+                            android:id="@+id/ToReportBugs"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:orientation="horizontal">
+
+                            <com.joanzapata.iconify.widget.IconTextView
+                                android:id="@+id/button17"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:layout_weight="7"
+                                android:background="#FFFFFF"
+                                android:gravity="center"
+                                android:text="{fa-bug}"
+                                android:textSize="52sp" />
+
+                            <LinearLayout
+                                android:id="@+id/Setting"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:layout_marginBottom="10dp"
+                                android:layout_weight="1"
+                                android:background="#FFFFFF"
+                                android:gravity="center"
+                                android:paddingLeft="24dp"
+                                android:textAlignment="textStart">
+
+                                <TextView
+                                    android:id="@+id/textView10"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:layout_weight="1"
+                                    android:gravity="center_vertical"
+                                    android:text="Report Bug"
+                                    android:textColor="#000000"
+                                    android:textSize="30sp" />
+
+                                <com.joanzapata.iconify.widget.IconTextView
+                                    android:id="@+id/textView11"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:layout_weight="6"
+                                    android:gravity="center"
+                                    android:text="{fa-angle-right}"
+                                    android:textSize="52sp" />
+                            </LinearLayout>
+                        </LinearLayout>
+
                     </LinearLayout>
 
                 </LinearLayout>
@@ -732,21 +923,57 @@
 
                             <LinearLayout
                                 android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_marginBottom="1dp"
+                                android:layout_height="match_parent"
+                                android:layout_marginBottom="2dp"
                                 android:background="#FFFFFF"
-                                android:gravity="center_vertical"
+                                android:orientation="horizontal"
                                 android:paddingLeft="10dp"
                                 android:paddingRight="10dp"
-                                android:paddingBottom="2dp">
+                                android:paddingBottom="3dp">
 
-                                <TextView
-                                    android:layout_width="wrap_content"
+                                <LinearLayout
+                                    android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
-                                    android:layout_weight="1"
-                                    android:text="News"
-                                    android:textColor="#4472C4"
-                                    android:textSize="24sp" />
+                                    android:layout_marginBottom="1dp"
+                                    android:background="#4472C4"
+                                    android:gravity="center_vertical">
+
+                                    <TextView
+                                        android:id="@+id/GiesNews"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginRight="1dp"
+                                        android:layout_weight="1"
+                                        android:background="#FFFFFF"
+                                        android:gravity="center"
+                                        android:text="Gies News"
+                                        android:textColor="#4472C4"
+                                        android:textSize="21sp"
+                                        android:textStyle="bold" />
+
+                                    <TextView
+                                        android:id="@+id/ActivityNews"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginLeft="1dp"
+                                        android:layout_weight="1"
+                                        android:background="#FFFFFF"
+                                        android:gravity="center"
+                                        android:text="Activity News"
+                                        android:textColor="#4472C4"
+                                        android:textSize="21sp"
+                                        android:textStyle="bold" />
+
+                                </LinearLayout>
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:layout_gravity="right"
+                                android:background="#FFFFFF"
+                                android:gravity="right"
+                                android:orientation="horizontal">
 
                                 <TextView
                                     android:id="@+id/textView19"
@@ -785,10 +1012,22 @@
                             android:background="#FFFFFF">
 
                             <LinearLayout
-                                android:id="@+id/news_scroll_container"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:orientation="vertical" />
+                                android:orientation="vertical">
+
+                                <LinearLayout
+                                    android:id="@+id/activitynews_scroll_container"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:orientation="vertical"></LinearLayout>
+
+                                <LinearLayout
+                                    android:id="@+id/news_scroll_container"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:orientation="vertical"></LinearLayout>
+                            </LinearLayout>
                         </ScrollView>
 
                     </LinearLayout>
@@ -1013,6 +1252,7 @@
                         android:background="#FFFFFF">
 
                         <LinearLayout
+                            android:id="@+id/TrendingContainer"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:orientation="vertical" />

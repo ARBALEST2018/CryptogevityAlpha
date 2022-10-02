@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:paddingLeft="20dp"
+    android:paddingTop="20dp"
+    android:paddingRight="20dp">
+
+    <LinearLayout
+        android:id="@+id/trendingCourseContainer"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/forum_post_brief_back">
+
+        <ImageView
+            android:id="@+id/CourseImage"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="40dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginRight="40dp"
+            android:layout_marginBottom="20dp"
+            android:background="@mipmap/trendingcourse1"
+            android:scaleX="1.8"
+            android:scaleY="1.8" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="20dp"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/CourseTitle"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:text="This is Course Title"
+                android:textColor="#000000"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/CourseCategory"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="2"
+                android:gravity="top"
+                android:text="This is course category" />
+
+            <TextView
+                android:id="@+id/textView30"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="2"
+                android:gravity="bottom"
+                android:text="4k registers" />
+        </LinearLayout>
+    </LinearLayout>
+</LinearLayout>

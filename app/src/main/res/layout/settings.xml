@@ -26,7 +26,8 @@
             android:paddingLeft="30dp"
             android:text="{fa-angle-left}"
             android:textColor="#FFFFFF"
-            android:textSize="52sp" />
+            android:textSize="52sp"
+            tools:visibility="gone" />
 
         <TextView
             android:id="@+id/textView15"
@@ -47,29 +48,28 @@
         <LinearLayout
             android:id="@+id/ManageAccount"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
+            android:layout_height="wrap_content"
             android:background="#919191"
             android:orientation="horizontal">
 
             <com.joanzapata.iconify.widget.IconTextView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_weight="7"
+                android:layout_weight="8"
                 android:background="#FFFFFF"
                 android:gravity="center"
+                android:singleLine="true"
                 android:text="{fa-cog}"
-                android:textSize="52sp" />
+                android:textSize="42sp" />
 
             <LinearLayout
                 android:id="@+id/ManageCourse"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginBottom="10dp"
+                android:layout_marginBottom="7dp"
                 android:layout_weight="1"
                 android:background="#FFFFFF"
                 android:gravity="center"
-                android:paddingLeft="24dp"
                 android:textAlignment="textStart">
 
                 <TextView
@@ -78,9 +78,12 @@
                     android:layout_height="match_parent"
                     android:layout_weight="1"
                     android:gravity="center_vertical"
+                    android:paddingLeft="5dp"
+                    android:paddingTop="10dp"
+                    android:paddingBottom="10dp"
                     android:text="Manage Account"
                     android:textColor="#000000"
-                    android:textSize="30sp" />
+                    android:textSize="28sp" />
 
                 <com.joanzapata.iconify.widget.IconTextView
                     android:id="@+id/textView5"
@@ -88,6 +91,7 @@
                     android:layout_height="match_parent"
                     android:layout_weight="6"
                     android:gravity="center"
+                    android:singleLine="true"
                     android:text="{fa-angle-right}"
                     android:textSize="52sp" />
             </LinearLayout>
@@ -97,15 +101,15 @@
         <TextView
             android:id="@+id/textView23"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1.05"
-            android:visibility="visible" />
+            android:layout_height="wrap_content"
+            android:text="t"
+            android:textSize="34sp"
+            android:visibility="invisible" />
 
         <LinearLayout
             android:id="@+id/EditPersonalInfo"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
+            android:layout_height="wrap_content"
             android:background="#919191"
             android:orientation="horizontal">
 
@@ -113,21 +117,21 @@
                 android:id="@+id/button13"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_weight="7"
+                android:layout_weight="8"
                 android:background="#FFFFFF"
                 android:gravity="center"
+                android:singleLine="true"
                 android:text="{fa-user}"
-                android:textSize="52sp" />
+                android:textSize="42sp" />
 
             <LinearLayout
                 android:id="@+id/ManageCourse"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginBottom="10dp"
+                android:layout_marginBottom="7dp"
                 android:layout_weight="1"
                 android:background="#FFFFFF"
                 android:gravity="center"
-                android:paddingLeft="24dp"
                 android:textAlignment="textStart">
 
                 <TextView
@@ -136,9 +140,12 @@
                     android:layout_height="match_parent"
                     android:layout_weight="1"
                     android:gravity="center_vertical"
+                    android:paddingLeft="5dp"
+                    android:paddingTop="10dp"
+                    android:paddingBottom="10dp"
                     android:text="Edit Personal Info"
                     android:textColor="#000000"
-                    android:textSize="30sp" />
+                    android:textSize="28sp" />
 
                 <com.joanzapata.iconify.widget.IconTextView
                     android:id="@+id/textView5"
@@ -146,8 +153,10 @@
                     android:layout_height="match_parent"
                     android:layout_weight="6"
                     android:gravity="center"
+                    android:singleLine="true"
                     android:text="{fa-angle-right}"
-                    android:textSize="52sp" />
+                    android:textSize="52sp"
+                    tools:visibility="gone" />
             </LinearLayout>
 
         </LinearLayout>
@@ -155,8 +164,7 @@
         <LinearLayout
             android:id="@+id/Notification"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
+            android:layout_height="wrap_content"
             android:background="#919191"
             android:orientation="horizontal">
 
@@ -164,9 +172,10 @@
                 android:id="@+id/button14"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_weight="7"
+                android:layout_weight="8"
                 android:background="#FFFFFF"
                 android:gravity="center"
+                android:singleLine="true"
                 android:text="{fa-bell}"
                 android:textSize="42sp" />
 
@@ -174,11 +183,10 @@
                 android:id="@+id/Grade"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginBottom="10dp"
+                android:layout_marginBottom="7dp"
                 android:layout_weight="1"
                 android:background="#FFFFFF"
                 android:gravity="center"
-                android:paddingLeft="24dp"
                 android:textAlignment="textStart">
 
                 <TextView
@@ -187,9 +195,12 @@
                     android:layout_height="match_parent"
                     android:layout_weight="1"
                     android:gravity="center_vertical"
+                    android:paddingLeft="5dp"
+                    android:paddingTop="10dp"
+                    android:paddingBottom="10dp"
                     android:text="Notification"
                     android:textColor="#000000"
-                    android:textSize="30sp" />
+                    android:textSize="28sp" />
 
                 <com.joanzapata.iconify.widget.IconTextView
                     android:id="@+id/textView7"
@@ -198,15 +209,15 @@
                     android:layout_weight="6"
                     android:gravity="center"
                     android:text="{fa-angle-right}"
-                    android:textSize="52sp" />
+                    android:textSize="52sp"
+                    tools:visibility="gone" />
             </LinearLayout>
         </LinearLayout>
 
         <LinearLayout
             android:id="@+id/ReportBug"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
+            android:layout_height="wrap_content"
             android:background="#919191"
             android:orientation="horizontal">
 
@@ -214,21 +225,21 @@
                 android:id="@+id/button15"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_weight="7"
+                android:layout_weight="8"
                 android:background="#FFFFFF"
                 android:gravity="center"
+                android:singleLine="true"
                 android:text="{fa-bug}"
-                android:textSize="52sp" />
+                android:textSize="42sp" />
 
             <LinearLayout
                 android:id="@+id/Preference"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginBottom="10dp"
+                android:layout_marginBottom="7dp"
                 android:layout_weight="1"
                 android:background="#FFFFFF"
                 android:gravity="center"
-                android:paddingLeft="24dp"
                 android:textAlignment="textStart">
 
                 <TextView
@@ -237,9 +248,12 @@
                     android:layout_height="match_parent"
                     android:layout_weight="1"
                     android:gravity="center_vertical"
+                    android:paddingLeft="5dp"
+                    android:paddingTop="10dp"
+                    android:paddingBottom="10dp"
                     android:text="Report Bug"
                     android:textColor="#000000"
-                    android:textSize="30sp" />
+                    android:textSize="28sp" />
 
                 <com.joanzapata.iconify.widget.IconTextView
                     android:id="@+id/textView13"
@@ -248,7 +262,8 @@
                     android:layout_weight="6"
                     android:gravity="center"
                     android:text="{fa-angle-right}"
-                    android:textSize="52sp" />
+                    android:textSize="52sp"
+                    tools:visibility="gone" />
             </LinearLayout>
 
         </LinearLayout>
@@ -256,8 +271,7 @@
         <LinearLayout
             android:id="@+id/TextSize"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
+            android:layout_height="wrap_content"
             android:background="#919191"
             android:orientation="horizontal">
 
@@ -265,21 +279,21 @@
                 android:id="@+id/button16"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_weight="7"
+                android:layout_weight="8"
                 android:background="#FFFFFF"
                 android:gravity="center"
+                android:singleLine="true"
                 android:text="{fa-text-width}"
-                android:textSize="52sp" />
+                android:textSize="42sp" />
 
             <LinearLayout
                 android:id="@+id/About"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginBottom="10dp"
+                android:layout_marginBottom="7dp"
                 android:layout_weight="1"
                 android:background="#FFFFFF"
                 android:gravity="center"
-                android:paddingLeft="24dp"
                 android:textAlignment="textStart">
 
                 <TextView
@@ -288,9 +302,12 @@
                     android:layout_height="match_parent"
                     android:layout_weight="1"
                     android:gravity="center_vertical"
+                    android:paddingLeft="5dp"
+                    android:paddingTop="10dp"
+                    android:paddingBottom="10dp"
                     android:text="Text Size"
                     android:textColor="#000000"
-                    android:textSize="30sp" />
+                    android:textSize="28sp" />
 
                 <com.joanzapata.iconify.widget.IconTextView
                     android:id="@+id/textView12"
@@ -299,22 +316,23 @@
                     android:layout_weight="6"
                     android:gravity="center"
                     android:text="{fa-angle-right}"
-                    android:textSize="52sp" />
+                    android:textSize="52sp"
+                    tools:visibility="gone" />
             </LinearLayout>
         </LinearLayout>
 
         <TextView
             android:id="@+id/textView25"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1.05"
-            android:visibility="visible" />
+            android:layout_height="wrap_content"
+            android:text="t"
+            android:textSize="34sp"
+            android:visibility="invisible" />
 
         <LinearLayout
             android:id="@+id/DarkMode"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
+            android:layout_height="wrap_content"
             android:background="#919191"
             android:orientation="horizontal">
 
@@ -322,21 +340,21 @@
                 android:id="@+id/button17"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_weight="7"
+                android:layout_weight="8"
                 android:background="#FFFFFF"
                 android:gravity="center"
+                android:singleLine="true"
                 android:text="{fa-moon-o}"
-                android:textSize="52sp" />
+                android:textSize="42sp" />
 
             <LinearLayout
                 android:id="@+id/Setting"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginBottom="10dp"
+                android:layout_marginBottom="7dp"
                 android:layout_weight="1"
                 android:background="#FFFFFF"
                 android:gravity="center"
-                android:paddingLeft="24dp"
                 android:textAlignment="textStart">
 
                 <TextView
@@ -345,16 +363,18 @@
                     android:layout_height="match_parent"
                     android:layout_weight="1"
                     android:gravity="center_vertical"
+                    android:paddingLeft="5dp"
+                    android:paddingTop="10dp"
+                    android:paddingBottom="10dp"
                     android:text="Dark Mode"
                     android:textColor="#000000"
-                    android:textSize="30sp" />
+                    android:textSize="28sp" />
 
                 <Switch
                     android:id="@+id/textView11"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
-                    android:gravity="center"
-                    android:textSize="52sp" />
+                    android:gravity="center" />
             </LinearLayout>
         </LinearLayout>
 
@@ -362,7 +382,7 @@
             android:id="@+id/textView26"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_weight="0.8"
+            android:layout_weight="1"
             android:visibility="visible" />
 
     </LinearLayout>

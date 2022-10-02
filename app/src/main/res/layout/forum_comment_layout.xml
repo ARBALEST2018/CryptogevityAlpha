@@ -11,15 +11,18 @@
         android:layout_height="match_parent"
         android:background="#FFFFFF"
         android:orientation="vertical"
-        android:paddingLeft="10dp"
-        android:paddingTop="15dp"
-        android:paddingRight="10dp">
+        android:paddingTop="5dp">
 
         <ImageView
             android:id="@+id/avatarMe"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@mipmap/png20220111234758_42" />
+            android:layout_marginLeft="20dp"
+            android:layout_marginTop="15dp"
+            android:layout_marginRight="20dp"
+            android:background="@mipmap/png20220111234758_42"
+            android:scaleX="1.2"
+            android:scaleY="1.2" />
 
         <TextView
             android:id="@+id/textView32"
@@ -31,28 +34,25 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="3dp"
+        android:layout_marginBottom="2dp"
         android:background="#FFFFFF"
-        android:orientation="vertical"
-        android:paddingTop="10dp">
+        android:orientation="vertical">
 
         <TextView
             android:id="@+id/commentUser"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
             android:background="#FFFFFF"
-            android:paddingLeft="10dp"
             android:paddingTop="10dp"
             android:text="This is user id"
-            android:textSize="14sp" />
+            android:textColor="#000000"
+            android:textSize="20sp" />
 
         <TextView
             android:id="@+id/commentTime"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingLeft="10dp"
-            android:paddingBottom="10dp"
+            android:paddingTop="5dp"
             android:text="This is time" />
 
         <TextView
@@ -60,10 +60,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="#FFFFFF"
-            android:paddingLeft="20dp"
-            android:paddingTop="5dp"
+            android:paddingTop="10dp"
             android:paddingRight="20dp"
-            android:paddingBottom="10dp"
+            android:paddingBottom="20dp"
             android:text="This is a comment. This is a comment. This is a comment. This is a comment. This is a comment. This is a comment. This is a comment. This is a comment. This is a comment. This is a comment. This is a comment. "
             android:textColor="#000000"
             android:textSize="20sp" />
