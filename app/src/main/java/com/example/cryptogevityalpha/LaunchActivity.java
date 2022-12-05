@@ -1,10 +1,15 @@
 package com.example.cryptogevityalpha;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.drawable.RoundedBitmapDrawable;
 import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory;
 
+import android.app.Activity;
+import android.content.ActivityNotFoundException;
+import android.content.Intent;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Bitmap;
@@ -16,17 +21,21 @@ import android.graphics.PixelFormat;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.speech.RecognizerIntent;
+import android.speech.tts.TextToSpeech;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.amplifyframework.AmplifyException;
 import com.amplifyframework.auth.cognito.AWSCognitoAuthPlugin;
@@ -62,15 +71,25 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
-public class LaunchActivity extends AppCompatActivity {
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.MediaType;
+import okhttp3.OkHttpClient;
+//import okhttp3.Request;
+import okhttp3.RequestBody;
+//import okhttp3.Response;
 
+public class LaunchActivity extends AppCompatActivity {
+    protected static final int RESULT_SPEECH = 1;
     private RequestQueue requestQueue;
     private TextView GiesNews;
     private TextView ActivityNews;
     private LinearLayout toChatbot;
     private ImageView chatbotNav;
+    private ImageButton btnSpeak;
     private IconTextView toCampusResource;
     private IconTextView toNews;
     private IconTextView toMe;
@@ -95,6 +114,11 @@ public class LaunchActivity extends AppCompatActivity {
     private final String loginFilename = "CryptogevityLogin";
     private final String courseFilename = "CryptogevityCourseSearchHistory";
     private final String newsFilename = "CryptogevityNewsSearchHistory";
+
+    private TextToSpeech t1;
+    String url = "http://34.231.40.162:8000/api/chatterbot/";
+    OkHttpClient client = new OkHttpClient();
+    MediaType MEDIA_TYPE = MediaType.parse("application/json");
 
 
     private int current; //1 for News, 2 for Course, 3 for Chatbot, 4 for Forum, 5 for Me
@@ -229,6 +253,7 @@ public class LaunchActivity extends AppCompatActivity {
         GiesNews = findViewById(R.id.GiesNews);
         ActivityNews = findViewById(R.id.ActivityNews);
         toChatbot = findViewById(R.id.ToChatbot);
+        btnSpeak = findViewById(R.id.btnSpeak);
         chatbotNav = findViewById(R.id.Chatbot_Nav);
         toCampusResource = findViewById(R.id.ToCampusResource);
         toNews = findViewById(R.id.ToNews);
@@ -329,13 +354,48 @@ public class LaunchActivity extends AppCompatActivity {
                     }
                 }, this);
 
+        t1 = new TextToSpeech(this, new TextToSpeech.OnInitListener() {
+            @Override
+            public void onInit(int i) {
+                if (i != TextToSpeech.ERROR) {
+                    int result = t1.setLanguage(Locale.US);
+                    if(result == TextToSpeech.LANG_MISSING_DATA || result == TextToSpeech.LANG_NOT_SUPPORTED) {
+                        Toast.makeText(getApplicationContext() , "Language missing or not support", Toast.LENGTH_LONG).show();
+                    }
+//                    t1.speak("Hello. Welcome to the chatbot of cryptogevity, which is the chatbot mainly for cryptocurrency and related topics.", TextToSpeech.QUEUE_ADD, null, null);
+//                    t1.speak("Hello there, I am Cryptogevity Chatbot. Say something to me!", TextToSpeech.QUEUE_FLUSH, null,null);
+                } else {
+                    Toast.makeText(getApplicationContext() , "TTS initialization failed" + i, Toast.LENGTH_LONG).show();
+                }
+            }
+        });
+
+        btnSpeak.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
+                intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
+                intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, "en-US");
+
+                try {
+                    startActivityForResult(intent, RESULT_SPEECH);
+                    ((EditText)findViewById(R.id.enter_chat)).setText("");
+//                    tvText.setText("");
+                } catch (ActivityNotFoundException e) {
+                    Toast.makeText(getApplicationContext(), "Your device doesn't support Speech to Text", Toast.LENGTH_SHORT).show();
+                    e.printStackTrace();
+                }
+            }
+        });
+
         toChatbot.setOnClickListener(v -> {
             chatbot.setVisibility(View.VISIBLE);
             campusResource.setVisibility(View.GONE);
             news.setVisibility(View.GONE);
             me.setVisibility(View.GONE);
             forum.setVisibility(View.GONE);
-
+            t1.speak("Hello there, I am Cryptogevity Chatbot. Say something to me!", TextToSpeech.QUEUE_FLUSH, null,null);
             //toChatbot.setTextColor(0xFF4472C4);
             chatbotNav.setBackground(getDrawable(R.mipmap.bot_avatar_simple_selected_42));
             toCampusResource.setTextColor(Color.WHITE);
@@ -988,6 +1048,77 @@ public class LaunchActivity extends AppCompatActivity {
             });
         }
     }
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        switch (requestCode){
+            case RESULT_SPEECH: {
+                if (resultCode == RESULT_OK && data != null) {
+                    ArrayList<String> texts = data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
+                    ((EditText)findViewById(R.id.enter_chat)).setText(texts.get(0));
+//                    speak();
+//                    JSONObject postData = new JSONObject();
+//                    try{
+//                        postData.put("text", tvText.getText().toString());
+//                    } catch (JSONException e){
+//                        e.printStackTrace();
+//                    }
+//                    tvText.setText(texts.get(0));
+//                    RequestBody body = RequestBody.create(postData.toString(), MEDIA_TYPE);
+//                    Request request = new Request.Builder()
+//                            .url(url)
+//                            .post(body)
+//                            .header("Content-type", "application/json")
+//                            .header("Accept", "text/plain")
+//                            .build();
+//                    tvText.setText("Please Wait");
+//                    client.newCall(request).enqueue(new Callback() {
+//                        @Override
+//                        public void onResponse(@NonNull Call call, @NonNull okhttp3.Response response) throws IOException {
+//
+//                        }
+//
+//                        @Override
+//                        public void onFailure(@NonNull Call call, @NonNull IOException e) {
+//                            tvText.setText(e.toString());
+//                        }
+//
+//                        @Override
+//                        public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
+//                            String jsonData = response.body().string();
+//                            try {
+//                                JSONObject JSONobj = new JSONObject(jsonData);
+//                                String answer = JSONobj.getString("text").toString();
+//                                t1.speak(answer,TextToSpeech.QUEUE_FLUSH, null,null);
+//                                Log.i("answer",answer);
+//                            } catch(JSONException e){
+//                                e.printStackTrace();
+//                            }
+//                        }
+//                    });
+
+//                    tvText.setText(answer);
+                }
+                break;
+            }
+        }
+
+
+    }
+
+    private void speak(TextView toSet) {
+        String text = toSet.getText().toString();
+        t1.speak(text, TextToSpeech.QUEUE_FLUSH, null, null);
+    }
+
+    @Override
+    protected void onDestroy() {
+        if (t1 != null) {
+            t1.stop();
+            t1.shutdown();
+        }
+        super.onDestroy();
+    }
     private void respond(String input, View toAdd, ChatbotQnA QA) {
         TextView toSet = (TextView)toAdd.findViewById(R.id.onlyTextView);
         String url = "https://be.cryptogevity.com/api/chatterbot/";
@@ -1006,6 +1137,7 @@ public class LaunchActivity extends AppCompatActivity {
                             System.out.println("Web Api called");
                             QA.setAnswer(response.getString("text"));
                             toSet.setText(response.getString("text"));
+                            speak(toSet);
                             toAdd.findViewById(R.id.ThumbsContainer).setVisibility(View.VISIBLE);
                             //toSet.setText(response.toString());
                             toAdd.findViewById(R.id.ThumbUp).setOnClickListener(v -> {

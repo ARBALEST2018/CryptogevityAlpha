@@ -1098,12 +1098,18 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="match_parent"
                                 android:gravity="center_vertical"
-                                android:orientation="vertical">
+                                android:orientation="horizontal">
+
+                                <ImageButton
+                                    android:id="@+id/btnSpeak"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:background="@drawable/ic_mic" />
 
                                 <EditText
                                     android:id="@+id/enter_chat"
-                                    android:layout_width="match_parent"
-                                    android:layout_height="match_parent"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
                                     android:layout_weight="4"
                                     android:background="#E5E5E5"
                                     android:gravity="left|center_vertical"
@@ -1302,6 +1308,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:background="@mipmap/bot_avatar_simple_selected_42" />
+
             </LinearLayout>
 
             <com.joanzapata.iconify.widget.IconTextView
